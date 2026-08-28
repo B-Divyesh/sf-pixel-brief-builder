@@ -32,10 +32,12 @@ Open `http://localhost:5173`. The direct demo URL is `http://localhost:5173/demo
 
 ```bash
 npm test
+npm run lint
+npm run typecheck
 npm run build
 ```
 
-`npm test` builds the site, runs unit tests, and runs Playwright claim checks. The production command is `npm run build`. It writes deployable files to `dist/`, with `dist/index.html` at the root.
+`npm test` type-checks, builds, lints, and runs the unit and Playwright checks. The production command is `npm run build`. It writes deployable files to `dist/`, with `dist/index.html` at the root.
 
 ## Deploy
 

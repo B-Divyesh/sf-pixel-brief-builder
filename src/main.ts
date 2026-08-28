@@ -260,7 +260,7 @@ function tileTemplate(packet: BriefPacket): string {
   return `<section class="tile-section" aria-labelledby="tile-heading">
     <div><h4 id="tile-heading">16×16 tile template</h4><p>Use the four colours only. Keep matching edges clear.</p></div>
     <div class="tile-guide ${paletteClass(packet.config.palette)}" role="img" aria-label="A sixteen by sixteen example tile grid using the ${packet.palette.name} palette">
-      ${Array.from({ length: 64 }, (_, index) => `<i class="tile-${tileTone(index)}"></i>`).join('')}
+      ${Array.from({ length: 256 }, (_, index) => `<i class="tile-${tileTone(index)}"></i>`).join('')}
     </div>
     <ul><li>Top: readable edge</li><li>Centre: quiet texture</li><li>Sides: repeat cleanly</li></ul>
   </section>`;
@@ -481,9 +481,9 @@ function percentClass(percent: number): number {
 }
 
 function tileTone(index: number): number {
-  const row = Math.floor(index / 8);
-  const column = index % 8;
-  if (row < 2 || column === 0 || column === 7) return 1;
+  const row = Math.floor(index / 16);
+  const column = index % 16;
+  if (row < 3 || column === 0 || column === 15) return 1;
   if ((row + column) % 5 === 0) return 3;
   return (row + column) % 3 === 0 ? 2 : 4;
 }
@@ -499,5 +499,5 @@ window.addEventListener('offline', () => document.querySelector<HTMLElement>('[d
 render();
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  window.addEventListener('load', () => void navigator.serviceWorker.register('/sw.js'));
+  window.addEventListener('load', () => void navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }));
 }

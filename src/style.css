@@ -46,7 +46,7 @@ button, select, a { -webkit-tap-highlight-color: transparent; }
 a { color: var(--moss-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 a:hover { color: var(--clay); }
 
-button, .button { min-height: 44px; }
+button, .button { min-width: 44px; min-height: 44px; }
 
 :focus-visible {
   outline: 4px solid var(--moss-bright);
@@ -110,6 +110,8 @@ h4 { font-size: 1rem; line-height: 1.25; }
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  min-width: 44px;
+  min-height: 44px;
   color: var(--charcoal);
   font-family: var(--display);
   letter-spacing: -.03em;
@@ -129,7 +131,7 @@ h4 { font-size: 1rem; line-height: 1.25; }
 .wordmark-grid i:nth-child(2), .wordmark-grid i:nth-child(3) { background: var(--moss-bright); }
 
 .site-header nav { display: flex; align-items: center; gap: clamp(16px, 3vw, 40px); }
-.site-header nav a { min-height: 44px; display: inline-flex; align-items: center; color: var(--charcoal); font-weight: 700; }
+.site-header nav a { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--charcoal); font-weight: 700; }
 
 .hero {
   display: grid;
@@ -177,7 +179,7 @@ h4 { font-size: 1rem; line-height: 1.25; }
 .button-primary { color: white; background: var(--moss); }
 .button-primary:hover { color: white; background: var(--moss-dark); }
 .button-secondary { color: var(--charcoal); background: var(--concrete-0); }
-.button-small { padding: 6px 12px; min-height: 38px; box-shadow: 3px 3px 0 var(--charcoal); }
+.button-small { padding: 8px 12px; min-height: 44px; box-shadow: 3px 3px 0 var(--charcoal); }
 
 .text-button {
   min-height: 44px;
@@ -217,7 +219,7 @@ h4 { font-size: 1rem; line-height: 1.25; }
 
 .hero-art { margin: 0; transform: rotate(1deg); }
 .hero-art::before { content: ""; position: absolute; z-index: 1; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 10px rgb(27 33 28 / 10%); }
-.hero-art img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.hero-art img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .hero-art figcaption { position: absolute; z-index: 2; right: 0; bottom: 0; max-width: 28ch; padding: 10px 14px; color: white; background: var(--charcoal); font-family: var(--mono); font-size: .8rem; }
 
 .builder {
@@ -320,7 +322,7 @@ legend { margin-bottom: 10px; }
 .tile-section { display: grid; grid-template-columns: minmax(130px, 1fr) 160px minmax(130px, .8fr); gap: 24px; align-items: center; }
 .tile-section h4, .story-section h4 { margin-bottom: 4px; font-family: var(--display); font-size: 1.5rem; }
 .tile-section p, .story-section p { margin-bottom: 0; color: var(--muted); }
-.tile-guide { display: grid; grid-template-columns: repeat(8, 1fr); width: 160px; height: 160px; border: 4px solid var(--charcoal); image-rendering: pixelated; }
+.tile-guide { display: grid; grid-template-columns: repeat(16, 1fr); width: 160px; height: 160px; border: 4px solid var(--charcoal); image-rendering: pixelated; }
 .tile-guide i { border: .5px solid rgb(27 33 28 / 8%); }
 .tile-guide.swatches-moss .tile-1 { background: #1b211c; }.tile-guide.swatches-moss .tile-2 { background: #375c35; }.tile-guide.swatches-moss .tile-3 { background: #b8d979; }.tile-guide.swatches-moss .tile-4 { background: #f3f0e7; }
 .tile-guide.swatches-ember .tile-1 { background: #251c18; }.tile-guide.swatches-ember .tile-2 { background: #a64227; }.tile-guide.swatches-ember .tile-3 { background: #e4a853; }.tile-guide.swatches-ember .tile-4 { background: #f3e8d2; }
@@ -357,6 +359,12 @@ legend { margin-bottom: 10px; }
 .site-footer { display: grid; grid-template-columns: 1.2fr auto 1fr; gap: 32px; align-items: start; padding: 48px max(20px, calc((100vw - 1312px) / 2)); color: white; background: var(--charcoal); }
 .site-footer p { margin: 4px 0 0; color: #e3e4dc; font-size: .88rem; }
 .site-footer nav { display: flex; gap: 24px; }
+.site-footer a, .legal-page a, .print-toolbar > a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+}
 .site-footer a { color: var(--moss-bright); }
 
 .demo-banner { position: sticky; z-index: 20; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 54px; padding: 8px max(20px, calc((100vw - 1312px) / 2)); color: var(--charcoal); background: var(--moss-bright); border-bottom: 2px solid var(--charcoal); }

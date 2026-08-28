@@ -32,7 +32,7 @@
     "claim": "Provides a printable checklist, tile guide, and six-panel storyboard",
     "where": "packet action and README",
     "test": "npm test -- --grep @claim:print-packet",
-    "sandbox": "demo data; open the print route and assert 20 checklist rows and six storyboard panels"
+    "sandbox": "demo data; open the print route and assert 20 checklist rows, a visible 256-cell tile guide in 16 columns under print media, and six storyboard panels"
   },
   {
     "id": "filename-copy",

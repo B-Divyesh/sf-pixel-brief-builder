@@ -55,6 +55,10 @@ const characterLabels = ['Main character', 'Helper', 'Friendly rival'];
 
 const file = (name: string, size = 16) => `${name}_${size}.png`;
 
+function articleFor(phrase: string): 'a' | 'an' {
+  return /^[aeiou]/i.test(phrase) ? 'an' : 'a';
+}
+
 export function generateBrief(config: BriefConfig, now = new Date()): BriefPacket {
   const genre = genres[config.genre];
   const palette = palettes[config.palette];
@@ -100,7 +104,7 @@ export function generateBrief(config: BriefConfig, now = new Date()): BriefPacke
     id: `brief-${config.genre}-${config.palette}-${config.characters}-${config.mechanic}`,
     title: `${titleWords[config.palette]} ${mechanicWords[config.mechanic]}`,
     config: { ...config },
-    concept: `Make a ${genre.label.toLowerCase()} in an ${genre.place}. ${config.characters === 1 ? 'One character' : `${config.characters} characters`} ${genre.movement} and ${mechanic.verb}. Use only the four colours below. Create original shapes without references to known games or characters.`,
+    concept: `Make a ${genre.label.toLowerCase()} in ${articleFor(genre.place)} ${genre.place}. ${config.characters === 1 ? 'One character' : `${config.characters} characters`} ${genre.movement} and ${mechanic.verb}. Use only the four colours below. Create original shapes without references to known games or characters.`,
     palette: { name: palette.label, colors: [...palette.colors] },
     assets,
     story: [

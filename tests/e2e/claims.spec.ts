@@ -59,7 +59,14 @@ test('print route includes the checklist and storyboard @claim:print-packet', as
   await expect(page).toHaveURL('/print?demo=1');
   await expect(page.getByRole('heading', { name: 'Print your tiny game plan' })).toBeVisible();
   await expect(page.locator('[data-asset-id]')).toHaveCount(20);
+  const tileGuide = page.getByRole('img', { name: /sixteen by sixteen example tile grid/i });
+  await expect(tileGuide).toBeVisible();
+  await expect(tileGuide.locator(':scope > i')).toHaveCount(256);
+  expect(await tileGuide.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length)).toBe(16);
   await expect(page.locator('.story-section li')).toHaveCount(6);
+  await page.emulateMedia({ media: 'print' });
+  await expect(tileGuide).toBeVisible();
+  await expect(page.locator('.story-section')).toBeVisible();
 });
 
 test('filenames copy as one line per asset @claim:filename-copy', async ({ page, context }) => {
@@ -85,14 +92,23 @@ test('generated prompts require original shapes @claim:original-prompts', async 
   await expect(page.getByText(/Use a clear silhouette and no known character details/).first()).toBeVisible();
 });
 
-test('key routes have one h1, route titles, and no serious axe findings', async ({ page }) => {
-  for (const route of ['/', '/demo', '/privacy', '/terms', '/missing-tile']) {
-    await page.goto(route);
-    await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page).toHaveTitle(/Pixel Brief Builder/);
-    const results = await new AxeBuilder({ page }).analyze();
-    expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
+test('key routes have one h1, route titles, no console errors, and no axe findings', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+  page.on('pageerror', (error) => errors.push(error.message));
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    for (const route of ['/', '/demo', '/privacy', '/terms', '/missing-tile']) {
+      await page.goto(route);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page).toHaveTitle(/Pixel Brief Builder/);
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations, `${route} at ${viewport.width}px has axe violations`).toEqual([]);
+    }
   }
+  expect(errors).toEqual([]);
 });
 
 test('keyboard opens the demo and reaches a checklist item', async ({ page }) => {
@@ -113,4 +129,38 @@ test('mobile layout stays inside the viewport', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);
   await expect(page.getByRole('button', { name: 'Export brief' })).toBeVisible();
+});
+
+test('standalone mobile controls meet the 44px touch target baseline', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const route of ['/', '/demo', '/privacy', '/terms', '/print?demo=1']) {
+    await page.goto(route);
+    const undersized = await page.locator('a[href], button, select').evaluateAll((elements) => elements.flatMap((element) => {
+      const style = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      if (style.display === 'none' || style.visibility === 'hidden' || box.width === 0 || box.height === 0) return [];
+      return box.width >= 43.5 && box.height >= 43.5 ? [] : [{
+        label: element.getAttribute('aria-label') ?? element.textContent?.trim() ?? element.tagName,
+        width: box.width,
+        height: box.height,
+      }];
+    }));
+    expect(undersized, `${route} has undersized standalone controls`).toEqual([]);
+  }
+});
+
+test('mobile hero keeps its 3:2 frame and serves a smaller source', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const image = page.locator('.hero-art img');
+  await expect(image).toBeVisible();
+  const size = await image.evaluate((element: HTMLImageElement) => ({
+    width: element.getBoundingClientRect().width,
+    height: element.getBoundingClientRect().height,
+    naturalWidth: element.naturalWidth,
+    currentSrc: element.currentSrc,
+  }));
+  expect(size.width / size.height).toBeCloseTo(1.5, 1);
+  expect(size.naturalWidth).toBeLessThan(1200);
+  expect(size.currentSrc).toContain('hero-workbench-mobile.webp');
 });

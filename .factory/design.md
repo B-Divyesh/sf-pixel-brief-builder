@@ -67,6 +67,7 @@ Art prompt sheet:
 Expected outputs:
 
 - `public/assets/hero-workbench.webp` at 1200×800, at most 300 KB.
+- `public/assets/hero-workbench-mobile.webp` as a 720×480 derivative for phone screens, at most 100 KB.
 - `public/assets/social-card.webp` at 1200×630, composed from the same generated source with CSS-free raster treatment.
 - Hand-authored SVG favicon: a four-cell moss sprout breaking through a concrete square.
 

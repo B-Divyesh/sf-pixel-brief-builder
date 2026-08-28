@@ -25,4 +25,10 @@ describe('brief generator', () => {
     expect(markdown.match(/^\d\. /gm)).toHaveLength(6);
     expect(markdown).toContain('- [x] Main character: idle');
   });
+
+  it('uses the correct article for every setting', () => {
+    expect(generateBrief({ ...base, genre: 'platformer' }).concept).toContain('in a ruined greenhouse');
+    expect(generateBrief({ ...base, genre: 'maze' }).concept).toContain('in an overgrown stone maze');
+    expect(generateBrief({ ...base, genre: 'quest' }).concept).toContain('in a mossy courtyard');
+  });
 });
