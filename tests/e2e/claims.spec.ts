@@ -22,7 +22,8 @@ test('demo stays in its own browser storage @claim:browser-local-only', async ({
   const keys = await page.evaluate(() => Object.keys(localStorage));
   expect(keys).toContain('demo:pixel-brief-builder:v1');
   expect(keys).not.toContain('pixel-brief-builder:real:v1');
-  expect(requests.every((url) => new URL(url).origin === 'http://127.0.0.1:4173')).toBe(true);
+  const productOrigin = new URL(page.url()).origin;
+  expect(requests.every((url) => new URL(url).origin === productOrigin)).toBe(true);
 });
 
 test('demo reloads offline after one visit @claim:offline-reload', async ({ page, context }) => {
@@ -95,7 +96,9 @@ test('generated prompts require original shapes @claim:original-prompts', async 
 test('key routes have one h1, route titles, no console errors, and no axe findings', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
+    const expectedMissingPageResponse = new URL(page.url()).pathname === '/missing-tile'
+      && message.text().includes('server responded with a status of 404');
+    if (message.type() === 'error' && !expectedMissingPageResponse) errors.push(message.text());
   });
   page.on('pageerror', (error) => errors.push(error.message));
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {

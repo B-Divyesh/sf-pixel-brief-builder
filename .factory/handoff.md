@@ -1,6 +1,6 @@
 # Pixel Brief Builder — repair handoff
 
-## Result: repaired and locally verified
+## Result: repaired, deployed, and verified live
 
 Work order `pixel-brief-builder-repair-1` repairs the independent verifier findings recorded in `ce9bfe2c6d83c272270d07b5ee6cfe31ec56603a` for candidate `e278e771cdb6a8290781de892a48063b8585dc78`. The artifact remains a Vite + TypeScript static web app with `dist/index.html` at its root.
 
@@ -30,9 +30,10 @@ Run on 2026-08-28 UTC:
 - `npm test`: PASS — typecheck, production build, lint, 6 Vitest tests, and 15 Playwright tests.
 - All eight literal commands in `.factory/claims.json`: PASS individually from their demo sandboxes.
 - `npx playwright test tests/e2e/service-worker-update.spec.ts --repeat-each=5`: PASS — 5/5 update cycles.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/demo .factory/evidence`: PASS — title, `lang`, one H1, main landmark, image alt text, button names, and zero console errors.
+- `/opt/fleet/lib/verify-url.sh https://pixel-brief-builder.sociobot.in/demo .factory/evidence`: PASS — title, `lang`, one H1, main landmark, image alt text, button names, and zero console errors.
 - Playwright axe integration: zero violations on `/`, `/demo`, `/privacy`, `/terms`, and `/missing-tile` at 1440×900 and 390×844.
-- Lighthouse 13.0.1 mobile: performance 100, accessibility 100, best practices 100, SEO 100; FCP 0.9 s, LCP 1.5 s, TBT 22 ms, CLS 0, total transfer 76,673 bytes.
+- The complete 14-test product browser suite also passes against the deployed custom domain, including all eight claims, live offline reload, desktop/mobile axe, keyboard, touch geometry, print media, reduced motion, and 200% text.
+- Lighthouse 13.0.1 mobile against production: performance 100, accessibility 100, best practices 100, SEO 100; FCP 0.9 s, LCP 1.2 s, TBT 0 ms, CLS 0, total transfer 76,330 bytes.
 - Production payload: JS 25,650 bytes raw / 9.27 kB gzip; CSS 20,670 bytes raw / 5.22 kB gzip; mobile hero 59,642 bytes.
 - Build hashes before deployment: `index.html` `e5880f1e...0fff6`; `sw.js` `c714f3b7...e20e8`; JS `20432190...e5b2`; CSS `fa0ca607...5e0f`.
 - Screenshots, fetched HTML, URL verification JSON, and Lighthouse summary are in `.factory/evidence/`.
@@ -47,6 +48,14 @@ swa deploy dist --env production --app-name sf-pixel-brief-builder --resource-gr
 ```
 
 Production URL: `https://pixel-brief-builder.sociobot.in`.
+
+## Deployment and live identity
+
+- Pushed repair commits to `origin/main` and deployed `dist/` with Static Web Apps CLI 2.0.10 to Azure resource `sociobot/sf-pixel-brief-builder` (production environment).
+- Azure reports default host `polite-plant-006c83b10.7.azurestaticapps.net` and custom domain `pixel-brief-builder.sociobot.in` for that resource.
+- Live `/`, `/demo`, `/privacy`, `/terms`, and `/print` return 200. `/missing-tile` returns a real 404 while rendering the designed missing-page UI.
+- Live `/sw.js` returns `Cache-Control: no-cache, no-store, must-revalidate`. The hashed JS and CSS return `max-age=31536000, immutable`.
+- Local and custom-domain SHA-256 values match exactly for `index.html`, `sw.js`, hashed JS, hashed CSS, and the mobile hero. Full hashes: `e5880f1eefcfeae7e58baafdd6fe6ec4e39573b094fa7ac7cabd9ecad110fff6`, `c714f3b72498e387fc344967299caf35518f3c0b7c57b73da90c39202a2e20e8`, `20432190bb8e39b189a4c648e00a74adb9177d987ba395f1f08e51639f99e5b2`, `fa0ca607fe1265c537d8ce7fa90d2341e60f9b91a697f13e86d4060f7ccb5e0f`, and `61f5bc1045905508964300614388e88139082c59302bc9329934fe14bf181ad5`.
 
 ## Known gaps
 

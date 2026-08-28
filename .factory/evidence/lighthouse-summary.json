@@ -1,14 +1,14 @@
 {
-  "runAt": "2026-08-28T12:32:41.930Z",
-  "url": "http://127.0.0.1:4173/",
+  "runAt": "2026-08-28T12:40:41.768Z",
+  "url": "https://pixel-brief-builder.sociobot.in/",
   "lighthouseVersion": "13.0.1",
   "performance": 100,
   "accessibility": 100,
   "bestPractices": 100,
   "seo": 100,
-  "LCP": "1.5 s",
+  "LCP": "1.2 s",
   "CLS": "0",
-  "TBT": "22 ms",
+  "TBT": "0 ms",
   "FCP": "0.9 s",
-  "totalBytes": 76673
+  "totalBytes": 76330
 }
