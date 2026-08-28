@@ -38,11 +38,24 @@ test('rebuild confirmation protects finished marks @claim:rebuild-confirmation',
 test('demo stays in its own browser storage @claim:browser-local-only', async ({ page }) => {
   const requests: string[] = [];
   page.on('request', (request) => requests.push(request.url()));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Build my art packet' }).click();
+  const realPacket = await page.evaluate(() => localStorage.getItem('pixel-brief-builder:real:v1'));
+
   await page.goto('/demo');
   await page.locator('[data-asset-id]').nth(6).check();
   const keys = await page.evaluate(() => Object.keys(localStorage));
   expect(keys).toContain('demo:pixel-brief-builder:v1');
-  expect(keys).not.toContain('pixel-brief-builder:real:v1');
+  expect(keys).toContain('pixel-brief-builder:real:v1');
+  expect(await page.evaluate(() => localStorage.getItem('pixel-brief-builder:real:v1'))).toBe(realPacket);
+  await page.getByRole('button', { name: 'Reset demo' }).click();
+  await expect(page.locator('[data-asset-id]:checked')).toHaveCount(5);
+  expect(await page.evaluate(() => localStorage.getItem('pixel-brief-builder:real:v1'))).toBe(realPacket);
+  await page.getByRole('button', { name: 'Start for real' }).click();
+  await expect(page).toHaveURL('/#builder');
+  await expect(page.locator('[data-asset-id]')).toHaveCount(18);
+  expect(await page.evaluate(() => localStorage.getItem('demo:pixel-brief-builder:v1'))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem('pixel-brief-builder:real:v1'))).toBe(realPacket);
   const productOrigin = new URL(page.url()).origin;
   expect(requests.every((url) => new URL(url).origin === productOrigin)).toBe(true);
 });
@@ -179,6 +192,27 @@ test('route metadata stays coherent', async ({ page }) => {
     await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', title);
     await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', description);
   }
+});
+
+test('routing restores focus, announces pages, and keeps legal and 404 routes real', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Privacy', exact: true }).first().click();
+  await expect(page).toHaveURL('/privacy');
+  await expect(page.getByRole('heading', { level: 1, name: 'Your packet stays on your device' })).toBeFocused();
+  await expect(page.locator('#route-status')).toHaveText('Your packet stays on your device');
+
+  await page.getByRole('link', { name: 'Terms', exact: true }).click();
+  await expect(page).toHaveURL('/terms');
+  await expect(page.getByRole('heading', { level: 1, name: 'Use the planner for original work' })).toBeFocused();
+  await page.goBack();
+  await expect(page).toHaveURL('/privacy');
+  await expect(page.getByRole('heading', { level: 1, name: 'Your packet stays on your device' })).toBeFocused();
+
+  const missing = await page.goto('/missing-tile');
+  expect(missing?.status()).toBe(process.env.PLAYWRIGHT_BASE_URL ? 404 : 200);
+  await expect(page.getByRole('heading', { level: 1, name: 'This path ends at concrete' })).toBeVisible();
+  await page.getByRole('link', { name: 'Return to the builder' }).click();
+  await expect(page).toHaveURL('/');
 });
 
 test('keyboard opens the demo and reaches a checklist item', async ({ page }) => {

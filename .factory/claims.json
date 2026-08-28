@@ -11,7 +11,7 @@
     "claim": "Saves only in this browser and keeps demo data separate",
     "where": "landing facts, demo banner, privacy page, and README",
     "test": "npm test -- --grep @claim:browser-local-only",
-    "sandbox": "fresh browser context at /demo; check demo namespace, absence of real namespace, and only same-origin requests"
+    "sandbox": "fresh browser context; build a real packet, edit and reset /demo, exit to real mode, assert the real value is byte-identical, the demo key is discarded, and all requests stay same-origin"
   },
   {
     "id": "rebuild-confirmation",
