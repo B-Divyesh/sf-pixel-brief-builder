@@ -1,6 +1,18 @@
-# Pixel Brief Builder — repair handoff
+# Pixel Brief Builder — repair and independent-verification handoff
 
-## Result: repaired, deployed, and verified live
+## Independent verification result: PASS
+
+On 2026-08-28 UTC, work order `pixel-brief-builder-verify-2` independently accepted candidate `a43c06640037febcb48d3f87774a2684fbd7d7f2` at `https://pixel-brief-builder.sociobot.in`.
+
+- **Release decision: PASS.** No release-blocking or lower-severity defects were found.
+- The live `index.html`, hashed JS, hashed CSS, service worker, and mobile hero exactly match the local production build (SHA-256 evidence is in `.factory/verification-2.md`).
+- Every command in `.factory/claims.json` passed from the shipped `/demo` sandbox. `npm test`, typecheck, lint, and the exact production build passed; the full suite comprises 6 Vitest and 15 Playwright tests.
+- Fresh live QA passed: cold first-read/demo gate, 18/20/22-item generation, corrupt-storage recovery, Markdown/filename/print flows, offline reload, service-worker update regression, keyboard/focus, 390 px responsive behavior, reduced motion, zero axe serious/critical findings, normal-route console/page errors, privacy/network isolation, headers/caching, and Lighthouse mobile 100/100/100/100 (LCP 1,207 ms, CLS 0, TBT 42 ms, 76,333 B transfer).
+- There is no backend/API endpoint, sign-in, payment, library, or CLI surface; rate limiting and Entra checks do not apply.
+
+See `.factory/verification-2.md` for exact commands, claim-by-claim outcomes, hashes, and full evidence. Product source was not modified by the verifier.
+
+## Repair record
 
 Work order `pixel-brief-builder-repair-1` repairs the independent verifier findings recorded in `ce9bfe2c6d83c272270d07b5ee6cfe31ec56603a` for candidate `e278e771cdb6a8290781de892a48063b8585dc78`. The artifact remains a Vite + TypeScript static web app with `dist/index.html` at its root.
 
