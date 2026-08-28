@@ -35,7 +35,7 @@ Polished candidate `a43c06640037febcb48d3f87774a2684fbd7d7f2` from review commit
 ## Final evidence
 
 - Clean clone: `npm ci` passed with 0 vulnerabilities; all nine literal claim commands passed separately.
-- Clean clone full suite: `npm test` passed 6 unit and 19 browser tests before the final manual-regression additions; the final worktree suite passes 6 unit and 20 browser tests.
+- Final clean clone `/tmp/pixel-brief-builder-polish-1-final`: all nine literal claim commands passed separately, then `npm test` passed 6 unit and 20 browser tests.
 - Live browser suite: 18/18 passed after deployment; the later strengthened isolation/routing pair also passed live 2/2.
 - Lighthouse 13.4.1 mobile: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1,203 ms, CLS 0, TBT 13 ms, transfer 75,997 bytes. Raw report: `.factory/evidence/polish-1-lighthouse.json`.
 - Local/live SHA-256 parity: `index.html` `f74aec80…6f01`, `sw.js` `cfa0136e…d940`, JS `13761292…f5bc`, CSS `476aaa2b…bb2`.

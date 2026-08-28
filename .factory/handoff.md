@@ -20,9 +20,9 @@ All four adversarial findings and every earlier verification finding are resolve
 
 ## Verification
 
-- Clean clone `/tmp/pixel-brief-builder-polish-1-clean`: `npm ci` passed; 0 vulnerabilities.
-- Every one of the nine literal commands in `.factory/claims.json` passed separately.
-- Clean full `npm test`: 6 unit tests and 19 browser tests passed. Final worktree regression after strengthening isolation/routing: 6 unit and 20 browser tests passed.
+- Final clean clone `/tmp/pixel-brief-builder-polish-1-final`: `npm ci` passed; 0 vulnerabilities.
+- Every one of the nine literal commands in `.factory/claims.json` passed separately from that final clone.
+- Final clean-clone `npm test`: 6 unit tests and 20 browser tests passed.
 - `npx playwright test tests/e2e/service-worker-update.spec.ts --repeat-each=5`: 5/5 passed.
 - Cold deployed browser suite: 18/18 passed. Strengthened live isolation/routing checks: 2/2 passed.
 - Live axe: zero violations on desktop/mobile core routes and seeded `/print?demo=1`.
