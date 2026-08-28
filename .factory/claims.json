@@ -57,9 +57,9 @@
   },
   {
     "id": "original-prompts",
-    "claim": "Prompts call for original shapes without known character references",
-    "where": "generated packet and README",
+    "claim": "Every asset has a drawing prompt, with original-shape and no-known-character reminders",
+    "where": "generated packet, landing handoff, and README",
     "test": "npm test -- --grep @claim:original-prompts",
-    "sandbox": "demo data; assert the concept and character prompt both contain the original-work constraint"
+    "sandbox": "demo data; assert all 20 assets have a Draw prompt and the concept and character prompt contain the original-work constraint"
   }
 ]

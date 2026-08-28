@@ -134,6 +134,9 @@ test('the real builder works without login or payment @claim:free-use', async ({
 
 test('generated prompts require original shapes @claim:original-prompts', async ({ page }) => {
   await page.goto('/demo');
+  const prompts = page.locator('.asset-row small');
+  await expect(prompts).toHaveCount(20);
+  expect((await prompts.allTextContents()).every((line) => /\bDraw\b/.test(line))).toBe(true);
   await expect(page.getByText(/Create original shapes without references to known games or characters/)).toBeVisible();
   await expect(page.getByText(/Use a clear silhouette and no known character details/).first()).toBeVisible();
 });
