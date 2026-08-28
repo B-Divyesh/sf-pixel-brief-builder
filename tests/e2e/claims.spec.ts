@@ -129,6 +129,19 @@ test('mobile layout stays inside the viewport', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);
   await expect(page.getByRole('button', { name: 'Export brief' })).toBeVisible();
+  await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
+  const zoomedOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(zoomedOverflow).toBeLessThanOrEqual(0);
+  await expect(page.getByRole('heading', { name: 'Plan the Moss Beacon art' })).toBeVisible();
+});
+
+test('reduced motion removes decorative movement', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/demo');
+  expect(await page.locator('html').evaluate((element) => getComputedStyle(element).scrollBehavior)).toBe('auto');
+  expect(await page.locator('.packet-count').evaluate((element) => getComputedStyle(element).transform)).toBe('none');
+  const duration = await page.locator('.asset-row').first().evaluate((element) => parseFloat(getComputedStyle(element, '::before').transitionDuration));
+  expect(duration).toBeLessThanOrEqual(0.001);
 });
 
 test('standalone mobile controls meet the 44px touch target baseline', async ({ page }) => {

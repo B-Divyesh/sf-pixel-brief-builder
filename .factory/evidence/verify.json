@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:4173/demo",
-  "loadMs": 537,
+  "loadMs": 527,
   "errors": [],
   "a11y": {
     "title": "Demo — Pixel Brief Builder",
@@ -9,6 +9,6 @@
     "main": true,
     "imgsMissingAlt": 0,
     "buttonsUnlabeled": 0,
-    "textLength": 4216
+    "textLength": 4215
   }
 }

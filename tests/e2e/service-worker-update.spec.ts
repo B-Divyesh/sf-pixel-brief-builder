@@ -85,7 +85,12 @@ test('an existing client receives the new hashed app shell after a worker update
     activeRoot = versionTwo;
     await page.evaluate(async () => {
       const registration = await navigator.serviceWorker.getRegistration();
+      const previousController = navigator.serviceWorker.controller;
+      const controllerChanged = new Promise<void>((resolve) => {
+        navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true });
+      });
       await registration?.update();
+      if (navigator.serviceWorker.controller === previousController) await controllerChanged;
     });
     await expect.poll(() => page.evaluate(() => caches.keys())).toContain('pixel-brief-builder-browser-update');
     await page.reload();
