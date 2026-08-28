@@ -1,4 +1,30 @@
-# Pixel Brief Builder — repair and independent-verification handoff
+# Pixel Brief Builder — review-1 handoff
+
+## Review result: FAIL
+
+Work order `pixel-brief-builder-review-1` made no product-code changes. It reviewed the live product cold at 390px and desktop, cloned the repository into `/tmp/pixel-brief-builder-review-Hly4MS`, and wrote `.factory/review-1.md`.
+
+- Cold first read and one-click demo: PASS.
+- Demo isolation/reset/exit, real-storage preservation, and same-origin network behavior: PASS.
+- All eight literal claim commands in `.factory/claims.json`: PASS from the clean clone. The full `npm test` passed (build, lint, 6 Vitest tests, 15 Playwright tests).
+- Earlier verification findings were confirmed fixed live and in source.
+- Release decision: **FAIL**. The review found a seeded-print-route heading-order axe violation, stale route-specific OG/Twitter text, an uncorrected article in a generated ground-tile prompt, and unlisted outcome claims. See `.factory/review-1.md` for exact evidence and repairs.
+
+## How to verify the review findings
+
+```bash
+cd /work/repo
+npm ci
+npm test
+```
+
+For F-1-1, use a browser context that first opens `/demo` and then `/print?demo=1`; a direct fresh print route has no packet and therefore does not render the invalid `<h3>`. Run axe against that seeded print route. For F-1-3, build a platformer packet and inspect the **Ground tile** prompt.
+
+## Remaining work
+
+Implement and test F-1-1 through F-1-4 in `.factory/review-1.md`, then perform a new full independent review. No deployment action was taken by this reviewer.
+
+# Previous repair and independent-verification handoff
 
 ## Independent verification result: PASS
 
