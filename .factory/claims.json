@@ -1,0 +1,58 @@
+[
+  {
+    "id": "finite-packet",
+    "claim": "Creates an 18, 20, or 22-item art packet from four choices",
+    "where": "builder and README",
+    "test": "npm test -- --grep @claim:finite-packet",
+    "sandbox": "fresh browser context at /demo; assert 20 seeded items, then rebuild with three characters and assert 22"
+  },
+  {
+    "id": "browser-local-only",
+    "claim": "Saves only in this browser and keeps demo data separate",
+    "where": "landing facts, demo banner, privacy page, and README",
+    "test": "npm test -- --grep @claim:browser-local-only",
+    "sandbox": "fresh browser context at /demo; check demo namespace, absence of real namespace, and only same-origin requests"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit",
+    "where": "landing facts and README",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "fresh browser context at /demo; wait for service worker, set the context offline, reload, and assert packet plus offline state"
+  },
+  {
+    "id": "markdown-export",
+    "claim": "Exports the complete packet as Markdown",
+    "where": "packet action and README",
+    "test": "npm test -- --grep @claim:markdown-export",
+    "sandbox": "demo data; download the file and assert one checklist line per asset plus six storyboard lines"
+  },
+  {
+    "id": "print-packet",
+    "claim": "Provides a printable checklist, tile guide, and six-panel storyboard",
+    "where": "packet action and README",
+    "test": "npm test -- --grep @claim:print-packet",
+    "sandbox": "demo data; open the print route and assert 20 checklist rows and six storyboard panels"
+  },
+  {
+    "id": "filename-copy",
+    "claim": "Copies one safe filename per asset",
+    "where": "packet action",
+    "test": "npm test -- --grep @claim:filename-copy",
+    "sandbox": "demo data with clipboard permission; copy and assert 20 newline-separated filenames"
+  },
+  {
+    "id": "free-use",
+    "claim": "Free to use without an account",
+    "where": "landing facts, terms, and README",
+    "test": "npm test -- --grep @claim:free-use",
+    "sandbox": "fresh context on /; build the real 18-item packet without login or payment input"
+  },
+  {
+    "id": "original-prompts",
+    "claim": "Prompts call for original shapes without known character references",
+    "where": "generated packet and README",
+    "test": "npm test -- --grep @claim:original-prompts",
+    "sandbox": "demo data; assert the concept and character prompt both contain the original-work constraint"
+  }
+]

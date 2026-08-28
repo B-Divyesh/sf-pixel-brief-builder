@@ -1,0 +1,23 @@
+{
+  "name": "pixel-brief-builder",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "npm run build && npm run test:unit && playwright test",
+    "test:unit": "vitest run tests/unit",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "1.58.2",
+    "@types/node": "^24.3.0",
+    "playwright-core": "^1.58.2",
+    "typescript": "5.9.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}
