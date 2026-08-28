@@ -4,6 +4,7 @@
 
 - Deployed: `https://pixel-brief-builder.sociobot.in/demo`
 - Local: `http://localhost:5173/demo`
+- First-screen query form: `/?demo=1`
 - Query form for the printable route: `/print?demo=1`
 
 The first demo screen already contains the **Moss Beacon Night** sample. It is a tiny top-down quest with two characters, a moss-and-stone palette, sleeping beacons, 20 asset rows, six storyboard panels, and five finished marks.

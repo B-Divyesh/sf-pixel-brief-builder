@@ -10,12 +10,12 @@ Pixel Brief Builder is for an adult and child making a game over one weekend. Fo
 
 - A finite checklist grouped into characters, world tiles, the main mechanic, and screen effects.
 - A four-colour tile template and six printable story panels.
-- Markdown export and a one-click filename copy action.
+- Markdown export and filename copying.
 - Browser-only progress with a separate demo namespace.
 - Offline reload after the first visit.
 - Original-work reminders in every generated concept.
 
-The tool is free and has no account or payment step. It does not draw sprites or open a game engine.
+The tool is free and has no account or payment step. Use the finished packet as your drawing list.
 
 ## Run locally
 

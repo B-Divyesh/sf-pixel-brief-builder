@@ -75,7 +75,7 @@ export function generateBrief(config: BriefConfig, now = new Date()): BriefPacke
   }
 
   assets.push(
-    asset('ground', 'World tiles', 'Ground tile', file('tile_ground'), '16×16', `Draw a repeatable ground tile for an ${genre.place}. Keep every outer edge simple.`),
+    asset('ground', 'World tiles', 'Ground tile', file('tile_ground'), '16×16', `Draw a repeatable ground tile for ${articleFor(genre.place)} ${genre.place}. Keep every outer edge simple.`),
     asset('wall', 'World tiles', config.genre === 'platformer' ? 'Platform tile' : 'Wall tile', file('tile_wall'), '16×16', `Draw one solid ${config.genre === 'platformer' ? 'platform' : 'wall'} tile with a strong top edge.`),
     asset('corner', 'World tiles', 'Corner tile', file('tile_corner'), '16×16', 'Draw one inside corner that connects the ground and solid tile.'),
     asset('background', 'World tiles', 'Simple background', file('background', 160), '160×90', `Draw a quiet ${genre.place} background. Leave room for the playable shapes.`),

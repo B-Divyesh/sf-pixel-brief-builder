@@ -21,7 +21,7 @@ Read aloud: “Plan your tiny game art first, for an adult and child making a we
 
 | Copy | Words | Result |
 | --- | ---: | --- |
-| Rebuilding replaces this packet after you confirm. | 7 | Pass |
+| Rebuilding asks before it replaces a packet with finished marks. | 10 | Pass |
 | Your finite art list appears here. | 6 | Pass |
 | Choose the four limits. | 4 | Pass |
 | Then build an 18, 20, or 22-item packet. | 8 | Pass |
@@ -34,12 +34,13 @@ Read aloud: “Plan your tiny game art first, for an adult and child making a we
 | Draw from named files, sizes, prompts, and a four-colour tile guide. | 11 | Pass |
 | Tick each asset, print six scenes, or export the whole brief. | 11 | Pass |
 
-## Limits and privacy
+## Handoff and privacy
 
 | Copy | Words | Result |
 | --- | ---: | --- |
-| It does not generate sprites, copy known characters, or open a game engine. | 13 | Pass |
-| It gives your team a finite original plan. | 8 | Pass |
+| Take the packet to your drawing tool. | 7 | Pass |
+| The packet gives your team a finite original plan. | 9 | Pass |
+| Each prompt names what to draw. | 6 | Pass |
 | Your packet stays in this browser. | 6 | Pass |
 | No account, child profile, analytics, or outside script is used. | 10 | Pass |
 | Plan a tiny game art list before you draw. | 9 | Pass |

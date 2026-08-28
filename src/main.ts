@@ -126,7 +126,7 @@ function homePage(): string {
           <p class="eyebrow">A weekend-sized art plan</p>
           <h1 tabindex="-1">Plan your tiny game art first</h1>
           <p class="lede">For an adult and child making a weekend game who need a small, shared drawing list.</p>
-          <div class="hero-action"><a class="button button-primary" href="/demo" data-route>Try it with sample data</a><span>Opens a finished 20-item packet.</span></div>
+          <div class="hero-action"><a class="button button-primary" href="/?demo=1" data-route>Try it with sample data</a><span>Opens a finished 20-item packet.</span></div>
           <ul class="plain-facts" aria-label="Product facts">
             <li>Free to use.</li>
             <li>Saves only in this browser.</li>
@@ -151,9 +151,9 @@ function homePage(): string {
         </ol>
       </section>
       <section class="limits" aria-labelledby="limits-heading">
-        <p class="eyebrow">A smaller promise</p>
-        <h2 id="limits-heading">This tool stops before drawing</h2>
-        <p>It does not generate sprites, copy known characters, or open a game engine. It gives your team a finite original plan.</p>
+        <p class="eyebrow">A finite handoff</p>
+        <h2 id="limits-heading">Take the packet to your drawing tool</h2>
+        <p>The packet gives your team a finite original plan. Each prompt names what to draw.</p>
         <p>Your packet stays in this browser. No account, child profile, analytics, or outside script is used.</p>
       </section>
     </main>
@@ -198,7 +198,7 @@ function builderSection(packet: BriefPacket | null, demo: boolean): string {
         <label for="mechanic">One main action</label>
         <select id="mechanic" name="mechanic">${options(mechanics, config.mechanic)}</select>
         <button class="button button-primary build-button" type="submit">${packet ? 'Rebuild my art packet' : 'Build my art packet'}</button>
-        <p class="form-note">Rebuilding replaces this packet after you confirm.</p>
+        <p class="form-note">Rebuilding asks before it replaces a packet with finished marks.</p>
       </form>
     </div>
     <div class="packet-host" id="packet-host">${packetView(packet, demo)}</div>
@@ -209,7 +209,7 @@ function options(collection: Record<string, { label: string }>, selected: string
   return Object.entries(collection).map(([id, entry]) => `<option value="${id}" ${selected === id ? 'selected' : ''}>${entry.label}</option>`).join('');
 }
 
-function packetView(packet: BriefPacket | null, demo: boolean): string {
+function packetView(packet: BriefPacket | null, demo: boolean, print = false): string {
   if (!packet) {
     return `<div class="empty-packet concrete-frame">
       <span class="empty-grid" aria-hidden="true"></span>
@@ -220,21 +220,23 @@ function packetView(packet: BriefPacket | null, demo: boolean): string {
   }
   const completed = packet.completed.length;
   const percent = Math.round((completed / packet.assets.length) * 100);
+  const titleTag = print ? 'h2' : 'h3';
+  const sectionTag = print ? 'h3' : 'h4';
   return `<article class="packet paper-sheet" aria-labelledby="packet-title">
     <header class="packet-header">
-      <div><p class="stamp">Pixel art brief</p><h3 id="packet-title">${packet.title}</h3><p>${packet.concept}</p></div>
+      <div><p class="stamp">Pixel art brief</p><${titleTag} id="packet-title">${packet.title}</${titleTag}><p>${packet.concept}</p></div>
       <div class="packet-count"><strong>${packet.assets.length}</strong><span>assets total</span></div>
     </header>
     ${saveProblem ? `<p class="error-note" role="alert">${saveProblem}</p>` : ''}
     <section class="progress-block" aria-labelledby="progress-heading">
-      <div><h4 id="progress-heading">Packet progress</h4><p><strong>${completed} of ${packet.assets.length}</strong> assets finished</p></div>
+      <div><${sectionTag} id="progress-heading">Packet progress</${sectionTag}><p><strong>${completed} of ${packet.assets.length}</strong> assets finished</p></div>
       <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="${packet.assets.length}" aria-valuenow="${completed}" aria-label="${completed} of ${packet.assets.length} assets finished"><i class="progress-${percentClass(percent)}"></i></div>
       ${completed < packet.assets.length ? `<button class="text-button" type="button" data-action="next-asset">Focus next asset</button>` : '<p class="complete-note">Packet complete. Your engine can stay small.</p>'}
     </section>
-    <section class="concept-strip" aria-labelledby="palette-heading"><div><h4 id="palette-heading">Four-colour rule</h4><p>${packet.palette.name}</p></div><div class="packet-palette ${paletteClass(packet.config.palette)}" role="img" aria-label="Colours: ${packet.palette.colors.join(', ')}"><i></i><i></i><i></i><i></i></div></section>
-    <div class="asset-groups">${assetGroups(packet)}</div>
-    ${tileTemplate(packet)}
-    ${storyboard(packet)}
+    <section class="concept-strip" aria-labelledby="palette-heading"><div><${sectionTag} id="palette-heading">Four-colour rule</${sectionTag}><p>${packet.palette.name}</p></div><div class="packet-palette ${paletteClass(packet.config.palette)}" role="img" aria-label="Colours: ${packet.palette.colors.join(', ')}"><i></i><i></i><i></i><i></i></div></section>
+    <div class="asset-groups">${assetGroups(packet, sectionTag)}</div>
+    ${tileTemplate(packet, sectionTag)}
+    ${storyboard(packet, sectionTag)}
     <div class="packet-actions">
       <button class="button button-primary" type="button" data-action="export">Export brief</button>
       <a class="button button-secondary" href="/print${demo ? '?demo=1' : ''}" data-route>Open printable packet</a>
@@ -243,9 +245,9 @@ function packetView(packet: BriefPacket | null, demo: boolean): string {
   </article>`;
 }
 
-function assetGroups(packet: BriefPacket): string {
+function assetGroups(packet: BriefPacket, headingTag: 'h3' | 'h4'): string {
   return [...groupAssets(packet.assets)].map(([group, items]) => `<section class="asset-group" aria-labelledby="group-${slug(group)}">
-    <h4 id="group-${slug(group)}">${group}<span>${items.length}</span></h4>
+    <${headingTag} id="group-${slug(group)}">${group}<span>${items.length}</span></${headingTag}>
     <ul>${items.map((item) => {
       const done = packet.completed.includes(item.id);
       return `<li class="asset-row ${done ? 'is-complete' : ''}">
@@ -256,9 +258,9 @@ function assetGroups(packet: BriefPacket): string {
   </section>`).join('');
 }
 
-function tileTemplate(packet: BriefPacket): string {
+function tileTemplate(packet: BriefPacket, headingTag: 'h3' | 'h4'): string {
   return `<section class="tile-section" aria-labelledby="tile-heading">
-    <div><h4 id="tile-heading">16×16 tile template</h4><p>Use the four colours only. Keep matching edges clear.</p></div>
+    <div><${headingTag} id="tile-heading">16×16 tile template</${headingTag}><p>Use the four colours only. Keep matching edges clear.</p></div>
     <div class="tile-guide ${paletteClass(packet.config.palette)}" role="img" aria-label="A sixteen by sixteen example tile grid using the ${packet.palette.name} palette">
       ${Array.from({ length: 256 }, (_, index) => `<i class="tile-${tileTone(index)}"></i>`).join('')}
     </div>
@@ -266,9 +268,9 @@ function tileTemplate(packet: BriefPacket): string {
   </section>`;
 }
 
-function storyboard(packet: BriefPacket): string {
+function storyboard(packet: BriefPacket, headingTag: 'h3' | 'h4'): string {
   return `<section class="story-section" aria-labelledby="story-heading">
-    <div><h4 id="story-heading">Six-panel storyboard</h4><p>Sketch the whole game before adding more assets.</p></div>
+    <div><${headingTag} id="story-heading">Six-panel storyboard</${headingTag}><p>Sketch the whole game before adding more assets.</p></div>
     <ol>${packet.story.map((scene, index) => `<li><span>${index + 1}</span><div class="story-frame" aria-hidden="true"><i></i></div><p>${scene}</p></li>`).join('')}</ol>
   </section>`;
 }
@@ -295,7 +297,7 @@ function printPage(): string {
   const packet = loadPacket(isDemoRoute());
   return `${demoBanner()}${header()}<main id="main" class="print-page">
     <p class="eyebrow">Print packet</p><h1 tabindex="-1">Print your tiny game plan</h1>
-    ${packet ? `<div class="print-toolbar"><button class="button button-primary" type="button" data-action="print">Print packet</button><a href="${isDemoRoute() ? '/demo' : '/#builder'}" ${isDemoRoute() ? 'data-route' : ''}>Back to builder</a></div>${packetView(packet, isDemoRoute())}` : `<div class="empty-packet"><h2>No packet is ready</h2><p>Build an art packet before opening the print page.</p><a class="button button-primary" href="/#builder">Build an art packet</a></div>`}
+    ${packet ? `<div class="print-toolbar"><button class="button button-primary" type="button" data-action="print">Print packet</button><a href="${isDemoRoute() ? '/demo' : '/#builder'}" ${isDemoRoute() ? 'data-route' : ''}>Back to builder</a></div>${packetView(packet, isDemoRoute(), true)}` : `<div class="empty-packet"><h2>No packet is ready</h2><p>Build an art packet before opening the print page.</p><a class="button button-primary" href="/#builder">Build an art packet</a></div>`}
   </main>${footer()}`;
 }
 
@@ -304,6 +306,7 @@ function notFoundPage(): string {
 }
 
 function routeView(): string {
+  if (location.pathname === '/' && isDemoRoute()) return demoPage();
   if (location.pathname === '/') return homePage();
   if (location.pathname === '/demo') return demoPage();
   if (location.pathname === '/privacy') return privacyPage();
@@ -322,10 +325,17 @@ const routeMeta: Record<string, { title: string; description: string }> = {
 
 function render(focusHeading = false): void {
   app.innerHTML = `${routeView()}<div class="sr-only" aria-live="polite" id="route-status"></div><div class="toast" role="status" aria-live="polite" hidden></div>`;
-  const meta = routeMeta[location.pathname] ?? { title: 'Page not found — Pixel Brief Builder', description: 'Return to Pixel Brief Builder.' };
+  const metaPath = location.pathname === '/' && isDemoRoute() ? '/demo' : location.pathname;
+  const meta = routeMeta[metaPath] ?? { title: 'Page not found — Pixel Brief Builder', description: 'Return to Pixel Brief Builder.' };
   document.title = meta.title;
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
-  document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://pixel-brief-builder.sociobot.in${location.pathname}`);
+  const routeUrl = `https://pixel-brief-builder.sociobot.in${metaPath}`;
+  document.querySelector('link[rel="canonical"]')?.setAttribute('href', routeUrl);
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', meta.title);
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', meta.description);
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', routeUrl);
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', meta.title);
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', meta.description);
   bindEvents();
   if (focusHeading) {
     const heading = document.querySelector<HTMLElement>('main h1');

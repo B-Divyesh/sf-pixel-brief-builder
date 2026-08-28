@@ -14,6 +14,13 @@
     "sandbox": "fresh browser context at /demo; check demo namespace, absence of real namespace, and only same-origin requests"
   },
   {
+    "id": "rebuild-confirmation",
+    "claim": "Asks before replacing a packet with finished marks",
+    "where": "builder help text",
+    "test": "npm test -- --grep @claim:rebuild-confirmation",
+    "sandbox": "fresh browser context at /demo; cancel the confirmation and assert the sample is unchanged, then accept and assert the new packet replaces it"
+  },
+  {
     "id": "offline-reload",
     "claim": "Works offline after the first visit",
     "where": "landing facts and README",

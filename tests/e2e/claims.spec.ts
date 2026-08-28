@@ -14,6 +14,27 @@ test('sample creates a finite packet @claim:finite-packet', async ({ page }) => 
   await expect(page.locator('[data-asset-id]')).toHaveCount(22);
 });
 
+test('rebuild confirmation protects finished marks @claim:rebuild-confirmation', async ({ page }) => {
+  await page.goto('/demo');
+  await expect(page.locator('[data-asset-id]')).toHaveCount(20);
+  await expect(page.locator('[data-asset-id]:checked')).toHaveCount(5);
+  await page.getByLabel('Character count').selectOption('3');
+
+  page.once('dialog', async (dialog) => {
+    expect(dialog.type()).toBe('confirm');
+    expect(dialog.message()).toContain('removes 5 finished marks');
+    await dialog.dismiss();
+  });
+  await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
+  await expect(page.locator('[data-asset-id]')).toHaveCount(20);
+  await expect(page.locator('[data-asset-id]:checked')).toHaveCount(5);
+
+  page.once('dialog', async (dialog) => dialog.accept());
+  await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
+  await expect(page.locator('[data-asset-id]')).toHaveCount(22);
+  await expect(page.locator('[data-asset-id]:checked')).toHaveCount(0);
+});
+
 test('demo stays in its own browser storage @claim:browser-local-only', async ({ page }) => {
   const requests: string[] = [];
   page.on('request', (request) => requests.push(request.url()));
@@ -24,6 +45,17 @@ test('demo stays in its own browser storage @claim:browser-local-only', async ({
   expect(keys).not.toContain('pixel-brief-builder:real:v1');
   const productOrigin = new URL(page.url()).origin;
   expect(requests.every((url) => new URL(url).origin === productOrigin)).toBe(true);
+});
+
+test('the first-screen sample action enters the isolated query demo', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Try it with sample data' }).click();
+  await expect(page).toHaveURL('/?demo=1');
+  await expect(page.getByLabel('Demo mode')).toContainText('nothing is saved to your real packet');
+  await expect(page.locator('[data-asset-id]')).toHaveCount(20);
+  await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Start for real' })).toBeVisible();
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(['demo:pixel-brief-builder:v1']);
 });
 
 test('demo reloads offline after one visit @claim:offline-reload', async ({ page, context }) => {
@@ -114,13 +146,48 @@ test('key routes have one h1, route titles, no console errors, and no axe findin
   expect(errors).toEqual([]);
 });
 
+test('seeded print headings pass axe', async ({ page }) => {
+  await page.goto('/demo');
+  await page.goto('/print?demo=1');
+  await expect(page.locator('#packet-title')).toHaveJSProperty('tagName', 'H2');
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations).toEqual([]);
+});
+
+test('route metadata stays coherent', async ({ page }) => {
+  const cases = [
+    ['/', 'Pixel Brief Builder — plan a tiny game art list', 'Choose four limits and get a small game art checklist, tile guide, storyboard, and safe filenames.'],
+    ['/demo', 'Demo — Pixel Brief Builder', 'Try a complete sample game art packet without changing your real packet.'],
+    ['/?demo=1', 'Demo — Pixel Brief Builder', 'Try a complete sample game art packet without changing your real packet.'],
+    ['/privacy', 'Privacy — Pixel Brief Builder', 'Read how Pixel Brief Builder keeps game packets in your browser.'],
+    ['/terms', 'Terms — Pixel Brief Builder', 'Read the plain terms for using Pixel Brief Builder.'],
+    ['/print?demo=1', 'Print packet — Pixel Brief Builder', 'Print your game art checklist, tile guide, and six-panel storyboard.'],
+    ['/missing-tile', 'Page not found — Pixel Brief Builder', 'Return to Pixel Brief Builder.'],
+  ] as const;
+
+  for (const [route, title, description] of cases) {
+    await page.goto(route);
+    const path = new URL(page.url()).pathname;
+    const canonicalPath = route === '/?demo=1' ? '/demo' : path;
+    const canonical = `https://pixel-brief-builder.sociobot.in${canonicalPath}`;
+    await expect(page).toHaveTitle(title);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', description);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', title);
+    await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', description);
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', title);
+    await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', description);
+  }
+});
+
 test('keyboard opens the demo and reaches a checklist item', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
   await page.getByRole('link', { name: 'Try it with sample data' }).focus();
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL('/demo');
+  await expect(page).toHaveURL('/?demo=1');
   await page.getByRole('button', { name: 'Focus next asset' }).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('[data-asset-id]').nth(5)).toBeFocused();

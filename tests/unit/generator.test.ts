@@ -26,9 +26,17 @@ describe('brief generator', () => {
     expect(markdown).toContain('- [x] Main character: idle');
   });
 
-  it('uses the correct article for every setting', () => {
-    expect(generateBrief({ ...base, genre: 'platformer' }).concept).toContain('in a ruined greenhouse');
-    expect(generateBrief({ ...base, genre: 'maze' }).concept).toContain('in an overgrown stone maze');
-    expect(generateBrief({ ...base, genre: 'quest' }).concept).toContain('in a mossy courtyard');
+  it('uses the correct article in concepts and ground-tile prompts for every setting', () => {
+    const cases = [
+      ['platformer', 'a ruined greenhouse'],
+      ['maze', 'an overgrown stone maze'],
+      ['quest', 'a mossy courtyard'],
+    ] as const;
+
+    for (const [genre, setting] of cases) {
+      const packet = generateBrief({ ...base, genre });
+      expect(packet.concept).toContain(`in ${setting}`);
+      expect(packet.assets.find((asset) => asset.id === 'ground')?.prompt).toContain(`for ${setting}`);
+    }
   });
 });
