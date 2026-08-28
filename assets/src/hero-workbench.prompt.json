@@ -1,0 +1,9 @@
+{
+  "asset": "hero-workbench.png",
+  "generated": "2026-08-28",
+  "tool": "/opt/fleet/lib/gen-image.sh",
+  "deployment": "factory-image",
+  "size": "1536x1024",
+  "quality": "high",
+  "prompt": "Editorial still life, top-down tabletop made from pale brutalist concrete, soft green moss growing through one diagonal seam, a small weekend game-planning kit arranged on the slab: blank square pixel-grid tiles, six empty storyboard frames, numbered paper inventory tags without legible marks, stubby graphite pencil, two pairs of hands only at the far edges (one adult, one child) moving simple original geometric game tokens, tactile paper and aggregate materials, muted cream charcoal forest green and lichen palette, hard morning side light, crisp contact shadows, slightly imperfect handmade composition, no computer screen. No text, no letters, no numbers, no logos, no watermark, no brands, no copyrighted characters, no glossy 3D, no neon, no gradient background."
+}
