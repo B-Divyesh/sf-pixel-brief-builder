@@ -1,74 +1,29 @@
-# Pixel Brief Builder — build handoff
+# Pixel Brief Builder — independent verification handoff
 
-Built and verified on 2026-08-28 for work order `pixel-brief-builder-build-1`.
+## Result: FAIL
 
-## What shipped
+Candidate `e278e771cdb6a8290781de892a48063b8585dc78` was independently tested on 2026-08-28 UTC at `https://pixel-brief-builder.sociobot.in`. The live deployment byte-for-byte matches the candidate, so this is not a deployment-only failure.
 
-- A responsive Vite and TypeScript static app with no runtime framework.
-- Four setup limits: genre, four-colour palette, one to three characters, and one mechanic.
-- Deterministic 18, 20, or 22-item packets with grouped checklists, dimensions, original-art prompts, and safe filenames.
-- A live four-colour tile guide and printable six-panel storyboard.
-- Checklist progress, progress summary, next-item keyboard focus, Markdown export, filename copy, and print layout.
-- A first-class empty state, bad-storage error, offline notice, native rebuild confirmation, and completed state.
-- Real routes for `/`, `/demo`, `/privacy`, `/terms`, `/print`, and a styled unknown-route view.
-- An isolated `/demo` with a 20-item Moss Beacon Night packet, five finished marks, reset, and clean exit.
-- Local-only persistence with separate real and demo storage keys.
-- A service worker that caches the app shell and demo for offline reload.
-- Route titles, canonical and social metadata, sitemap, robots file, favicon, security headers, and Azure SPA fallback.
-- The original concrete-and-moss hero image, generated for this product and optimized to 163 KB WebP.
+Release blockers:
 
-The product intentionally stops at planning. It does not create sprites, run a game, or use an AI service at runtime.
+1. The output labeled and announced as a 16×16 tile template has 64 cells in 8 columns. The `print-packet` claim test checks only checklist/storyboard counts and does not test the promised tile guide.
+2. Fixed `/assets/app.js` and `/assets/app.css` URLs, plus `/sw.js`, are served immutable for one year and cached cache-first. A two-version Chromium test advanced the worker to v2 while the page remained on app v1.
+3. Several standalone mobile controls miss the required 44×44 px target, including the 40 px-high `Start for real` button.
 
-## Run and deploy
+Additional defects: the mobile hero renders 338×800 instead of 3:2 and its mobile file is identical to desktop; unknown routes are soft 404s with HTTP 200; generated copy says `an mossy courtyard` and `an ruined greenhouse`.
 
-```bash
-npm ci
-npm test
-npm run build
-```
+Passing evidence:
 
-The exact production build command is `npm run build`. Output lands in `dist/`, and `dist/index.html` is at its root. Deploy the contents of `dist/` as the Azure Static Web App artifact.
+- Mandatory cold first-read and one-click demo gate passed.
+- After `npm ci`, all eight exact claim commands passed; the tile-guide assertion gap above still invalidates the full `print-packet` claim.
+- `npm test` passed: 3 unit and 11 Playwright tests.
+- TypeScript and exact Vite production build passed; `dist/` was produced.
+- `npm audit` reported 0 vulnerabilities. No lint task exists.
+- Normal, boundary, invalid-storage, denied-storage, confirmation, completion, export, print, reset, demo-exit, clipboard-error, keyboard, reduced-motion, offline, and 200% text-size paths were exercised.
+- Independent axe audits found no violations on key routes at desktop or 390 px; console/page/request errors were empty.
+- Requests remained same-origin and demo/real storage isolation held. There are no backend/API/sign-in/rate-limit checks to perform for this static product.
+- Fresh live Lighthouse mobile: 98 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.9 s, TBT 140 ms, CLS 0, 179 KiB transfer.
 
-The clean demo entry point is `/demo`. Sandbox details are in `.factory/demo.md`.
+Full commands, evidence, hashes, findings, and retest requirements are in [`.factory/verification-1.md`](verification-1.md).
 
-## Verification
-
-- `npm test`: passed.
-- Vitest: 3 tests passed.
-- Playwright 1.58.2 on Chromium: 11 tests passed.
-- Tagged product claims: 8 passed, including offline reload, storage isolation, finite item counts, Markdown export, print output, filename copy, free use, and original-work prompts.
-- Axe through Playwright: no serious or critical findings on home, demo, privacy, terms, or the unknown-route view.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/demo .factory/evidence`: passed with no console errors, one `h1`, `lang=en`, a main landmark, and no missing image alt text.
-- Mobile browser check: no horizontal overflow at 390 × 844 CSS pixels.
-- `npm audit`: 0 vulnerabilities.
-
-Lighthouse 12.8.2 mobile results against the local production build:
-
-| Category or metric | Result |
-| --- | ---: |
-| Performance | 99 |
-| Accessibility | 100 |
-| Best practices | 100 |
-| SEO | 100 |
-| Largest Contentful Paint | 2.1 s |
-| First Contentful Paint | 0.9 s |
-| Total Blocking Time | 10 ms |
-| Cumulative Layout Shift | 0 |
-
-Production transfer sizes from Vite:
-
-| Asset | Gzip or file size |
-| --- | ---: |
-| Initial JavaScript | 9.21 KB gzip |
-| CSS | 5.20 KB gzip |
-| Hero WebP | 163 KB |
-| Fonts | 0 KB |
-
-Evidence is in `.factory/evidence/`. Claim definitions and exact commands are in `.factory/claims.json`.
-
-## Known gaps and next steps
-
-- The success measure is not collected because v1 has no analytics. A privacy-preserving, aggregate page count could be added by the factory later.
-- Local progress does not sync between devices. This matches the local-first, no-account v1 scope.
-- The fixed app asset names require the service-worker cache version to change with future releases. Increment the cache key when shipping an update.
-- Test the packet with adult-child pairs and classroom groups before expanding the genre list. Keep every new setup within the 24-asset ceiling.
+No product code was modified. Retest after the three blockers are repaired and deployed.
