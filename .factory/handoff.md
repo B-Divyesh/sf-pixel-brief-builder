@@ -1,26 +1,21 @@
-# Pixel Brief Builder — review-2 handoff
+# Pixel Brief Builder — review-3 handoff
 
 ## Outcome
 
-Completed the adversarial first-read review only; no product source or deployment files were changed. `.factory/review-2.md` records a **PASS** with zero findings.
+Completed the requested adversarial review without changing product code or deployment files. `.factory/review-3.md` records **FAIL** with one blocking unresolved prior metadata finding and six minor copy findings.
 
 ## Verification performed
 
-- Cold live Chromium visits at 390×844 and 1440×900 confirmed the job, audience, first action, action outcome, and three plain facts before scrolling.
-- Exercised the live one-click demo, checked reset and exit isolation against a pre-existing real packet, intercepted requests, and reloaded the controlled demo offline.
-- From a fresh clone at `/tmp/pixel-brief-builder-review-2-9GsLam`: `npm ci` passed with 0 vulnerabilities; all nine literal `.factory/claims.json` commands passed separately; `npm test` passed build, lint, 6 unit tests, and 20 Playwright tests.
-- Verified live status/metadata/routes/links, focus and browser-back behavior, generated print heading outline and 16×16 guide, mobile hero source, and the designed 404.
-- Ran live axe scans at 390 px on `/`, `/demo`, `/privacy`, `/terms`, `/print?demo=1`, and `/missing-tile`: zero violations.
-- Retested every finding in review 1, polish 1, the verification reports, and the previous handoff; all remain fixed.
+- Opened the live site cold in fresh 390×844 and 1440×900 Chromium contexts before scrolling.
+- Exercised the live demo from a real packet: 20 seeded items, five marks, reset, isolated storage, exit, same-origin requests, and offline reload all passed.
+- Created clean clone `/tmp/pixel-brief-builder-review-3-fk9XP3`; `npm ci` reported 0 vulnerabilities. Ran every literal `.factory/claims.json` command and then `npm test` (6 unit + 20 Playwright tests): all passed. `npm run build` created `dist/`.
+- Checked live routes, status codes, headers, metadata, links, H1s, mobile axe scans, focus/back behavior, print grid, and prior findings.
+- Confirmed the blocking metadata issue with direct `curl` responses: all SPA routes return the home `<title>` and `og:title` before JavaScript executes.
 
-## Run locally
+## Product changes
 
-```bash
-npm ci
-npm test
-npm run build
-```
+None. Only this handoff and `review-3.md` were added.
 
-## Known gaps / next steps
+## Next steps
 
-None found in the reviewed scope. Maintain the current claim and routing regressions when making future product changes.
+Implement every finding in `review-3.md`, especially prerendered or route-specific initial metadata for direct route responses. Re-run the full review after repair.
