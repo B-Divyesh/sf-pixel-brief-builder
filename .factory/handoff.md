@@ -36,5 +36,6 @@ The repair commits `dcfad33` and `5fb3cb2` are pushed to `origin/main`. The test
 - The public custom domain serves repaired `index-CNHD7iV3.css`, including the banner-specific hover/focus rule.
 - `PLAYWRIGHT_BASE_URL=https://pixel-brief-builder.sociobot.in npm test` passed in full: build, lint, 8 unit tests, and all 22 browser tests, including the exact live reset contrast/Axe regression.
 - Local and deployed SHA-256 values match for `index.html`, CSS, JavaScript, and `sw.js`. The deployed worker is `no-cache, no-store, must-revalidate`; CSP, HSTS, Referrer-Policy, and `X-Content-Type-Options` are present; `/demo` is HTTP 200 and the designed `/missing-tile` page is HTTP 404.
+- Fresh live mobile Lighthouse 13.4.1: performance **100**, accessibility **100**, best practices **100**, SEO **100**; LCP **1,295 ms**, CLS **0**, TBT **45 ms**, transfer **76,451 B**.
 
 No product behavior that passed verification 3 was changed. There are no known gaps.
