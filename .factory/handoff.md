@@ -1,6 +1,6 @@
 # Pixel Brief Builder — repair handoff
 
-> **Release decision, 2026-08-29 UTC: repaired locally; deployment verification follows the push.** This repair addresses every release-blocking finding in independent verification 3 for candidate `aa211d5b84e68cbccd04da36f146110a8f49b0e8`.
+> **Release decision, 2026-08-29 UTC: PASS.** This repair addresses every release-blocking finding in independent verification 3 for candidate `aa211d5b84e68cbccd04da36f146110a8f49b0e8`, and the repaired production deployment was verified.
 
 ## Repair
 
@@ -31,6 +31,10 @@ The repaired state measures charcoal (`#1b211c`) on moss bright (`#b8d979`), **1
 
 ## Deployment and known gaps
 
-The repository's deployment contract is Azure Static Web Apps using `dist/` and `public/staticwebapp.config.json`. The repair commit is pushed to `origin/main`; the factory deployment is then checked at `https://pixel-brief-builder.sociobot.in` for the new reset-state rule, live Axe result, response headers, service worker caching, and identity parity.
+The repair commits `dcfad33` and `5fb3cb2` are pushed to `origin/main`. The tested `dist/` artifact was explicitly deployed to the existing Azure Static Web App `sf-pixel-brief-builder` production environment (`https://polite-plant-006c83b10.7.azurestaticapps.net`), which serves `https://pixel-brief-builder.sociobot.in`.
 
-No product behavior that passed verification 3 was changed. There are no known local gaps.
+- The public custom domain serves repaired `index-CNHD7iV3.css`, including the banner-specific hover/focus rule.
+- `PLAYWRIGHT_BASE_URL=https://pixel-brief-builder.sociobot.in npm test` passed in full: build, lint, 8 unit tests, and all 22 browser tests, including the exact live reset contrast/Axe regression.
+- Local and deployed SHA-256 values match for `index.html`, CSS, JavaScript, and `sw.js`. The deployed worker is `no-cache, no-store, must-revalidate`; CSP, HSTS, Referrer-Policy, and `X-Content-Type-Options` are present; `/demo` is HTTP 200 and the designed `/missing-tile` page is HTTP 404.
+
+No product behavior that passed verification 3 was changed. There are no known gaps.
