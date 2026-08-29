@@ -1,21 +1,34 @@
-# Pixel Brief Builder — review-3 handoff
+# Pixel Brief Builder — polish-3 handoff
 
 ## Outcome
 
-Completed the requested adversarial review without changing product code or deployment files. `.factory/review-3.md` records **FAIL** with one blocking unresolved prior metadata finding and six minor copy findings.
+Perfection-loop round 3 is complete with no known gaps. The product remains a local-first Vite + TypeScript static web app with its original concrete-and-moss identity. Repair commit `4270f67269482c0053ae9643a3e1710b2e12cac0` and evidence commit `7d8c12a` were pushed to `origin/main`. Azure deployment `745a3885-5fb6-4217-9396-8ba0cb2df00f` succeeded at `https://pixel-brief-builder.sociobot.in`.
 
-## Verification performed
+## What changed
 
-- Opened the live site cold in fresh 390×844 and 1440×900 Chromium contexts before scrolling.
-- Exercised the live demo from a real packet: 20 seeded items, five marks, reset, isolated storage, exit, same-origin requests, and offline reload all passed.
-- Created clean clone `/tmp/pixel-brief-builder-review-3-fk9XP3`; `npm ci` reported 0 vulnerabilities. Ran every literal `.factory/claims.json` command and then `npm test` (6 unit + 20 Playwright tests): all passed. `npm run build` created `dist/`.
-- Checked live routes, status codes, headers, metadata, links, H1s, mobile axe scans, focus/back behavior, print grid, and prior findings.
-- Confirmed the blocking metadata issue with direct `curl` responses: all SPA routes return the home `<title>` and `og:title` before JavaScript executes.
+- Production builds now contain route-specific initial HTML for Demo, Privacy, Terms, Print, and 404. Azure rewrites each URL to its document, so titles, descriptions, canonicals, Open Graph, and Twitter metadata are correct before JavaScript runs.
+- Landing copy now starts directly with the job-led headline. The metaphorical labels are gone, “character count” is consistent, and output names are standardized as “16×16 tile template” and “six-panel storyboard.”
+- The query demo remains one click from the first screen at `/?demo=1`. It uses only `demo:pixel-brief-builder:v1`, shows the persistent banner, resets to five finished sample assets, and discards demo state on “Start for real.”
+- Claim coverage now proves all three packet sizes and safe copied filenames. A unit test enforces a one-to-one mapping between every `.factory/claims.json` entry and its tagged browser test.
+- Mobile demo banners remain sticky. Existing print outline, 16×16 template, hashed-asset update safety, touch targets, responsive hero, article grammar, focus restoration, legal routes, and real 404 fixes remain covered.
+- `.factory/catalog-description.txt` is now the 61-character verb-first line: “Build a tiny game art checklist before anyone starts drawing.”
 
-## Product changes
+## Verification
 
-None. Only this handoff and `review-3.md` were added.
+- Clean clone: `/tmp/pixel-brief-builder-polish-3-clean-YhBeSn` at `4270f67`.
+- Every literal claim command in `.factory/claims.json`: 9/9 passed separately.
+- Clean `npm test`: 8 unit tests and 21 Playwright tests passed.
+- Exact work-order command `npm ci && npm test && npm run build`: passed; npm audit reported 0 vulnerabilities.
+- Build output: `dist/index.html` exists; JavaScript 26,378 B raw / 9.39 kB gzip; CSS 20,708 B raw / 5.22 kB gzip; no font transfer.
+- Local verifier: passed with no console or baseline accessibility errors.
+- Post-deploy live Playwright run: 21/21 passed, covering claims, demo isolation, same-origin requests, offline reload, exports, seeded print axe, route metadata, raw HTML responses, focus/back navigation, 404 status, keyboard use, 200% text, reduced motion, touch targets, and the mobile hero.
+- Live verifier: no console errors; `lang=en`; one H1; main landmark; no missing alt text or unnamed buttons. See `.factory/evidence/polish-3-live-verify/verify.json`.
+- Live Lighthouse mobile: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1,201 ms; CLS 0; TBT 15 ms; transfer 76,446 B. See `.factory/evidence/polish-3-live-lighthouse.json`.
+- Cold direct GETs: `/`, `/demo`, `/privacy`, `/terms`, and `/print?demo=1` returned 200 with route-specific initial metadata; `/missing-tile` returned 404 with the 404 metadata.
+- Deployment parity: local and live hashes match for `index.html`, every route HTML document, `sw.js`, hashed JS, and hashed CSS.
 
-## Next steps
+Run locally with `npm ci && npm run dev`. Reproduce all gates with `npm test && npm run build`. The direct sample URL is `http://localhost:5173/demo`; the first-screen query path is `http://localhost:5173/?demo=1`.
 
-Implement every finding in `review-3.md`, especially prerendered or route-specific initial metadata for direct route responses. Re-run the full review after repair.
+## Known gaps and next steps
+
+None. No finding from reviews 1–3 or earlier verification remains unresolved.
