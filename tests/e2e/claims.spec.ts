@@ -1,6 +1,21 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+function relativeLuminance(rgb: string): number {
+  const channels = rgb.match(/\d+(?:\.\d+)?/g)?.map(Number);
+  if (!channels || channels.length < 3) throw new Error(`Expected an RGB color, received ${rgb}`);
+  const [red, green, blue] = channels.slice(0, 3).map((channel) => {
+    const value = channel / 255;
+    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  });
+  return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
+}
+
+function contrastRatio(foreground: string, background: string): number {
+  const [lighter, darker] = [relativeLuminance(foreground), relativeLuminance(background)].sort((a, b) => b - a);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 test('sample creates a finite packet @claim:finite-packet', async ({ page }) => {
   await page.goto('/demo');
   await expect(page.getByRole('heading', { name: 'Plan the Moss Beacon art' })).toBeVisible();
@@ -37,6 +52,38 @@ test('rebuild confirmation protects finished marks @claim:rebuild-confirmation',
   await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
   await expect(page.locator('[data-asset-id]')).toHaveCount(22);
   await expect(page.locator('[data-asset-id]:checked')).toHaveCount(0);
+});
+
+test('Reset demo preserves AA text contrast after pointer reset and keyboard focus @regression:reset-demo-contrast', async ({ page }) => {
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/demo');
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByLabel('Character count').selectOption('3');
+    await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
+
+    const reset = page.getByRole('button', { name: 'Reset demo' });
+    await reset.hover();
+    await reset.click();
+    await reset.hover();
+    const hoverColors = await reset.evaluate((element) => ({
+      foreground: getComputedStyle(element).color,
+      background: getComputedStyle(element.closest('.demo-banner')!).backgroundColor,
+    }));
+    expect(contrastRatio(hoverColors.foreground, hoverColors.background), `Reset demo hover contrast at ${viewport.width}px`).toBeGreaterThanOrEqual(4.5);
+
+    const axe = await new AxeBuilder({ page }).analyze();
+    expect(axe.violations.filter((violation) => violation.id === 'color-contrast'), `Reset demo hover axe contrast at ${viewport.width}px`).toEqual([]);
+
+    await page.mouse.move(0, 0);
+    await reset.focus();
+    await expect(reset).toBeFocused();
+    const focusColors = await reset.evaluate((element) => ({
+      foreground: getComputedStyle(element).color,
+      background: getComputedStyle(element.closest('.demo-banner')!).backgroundColor,
+    }));
+    expect(contrastRatio(focusColors.foreground, focusColors.background), `Reset demo focus contrast at ${viewport.width}px`).toBeGreaterThanOrEqual(4.5);
+  }
 });
 
 test('demo stays in its own browser storage @claim:browser-local-only', async ({ page }) => {
