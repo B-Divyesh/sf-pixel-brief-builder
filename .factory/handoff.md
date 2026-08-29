@@ -1,41 +1,32 @@
-# Pixel Brief Builder — repair handoff
+# Pixel Brief Builder — independent verification handoff
 
-> **Release decision, 2026-08-29 UTC: PASS.** This repair addresses every release-blocking finding in independent verification 3 for candidate `aa211d5b84e68cbccd04da36f146110a8f49b0e8`, and the repaired production deployment was verified.
+> **Release decision, 2026-08-29 UTC: PASS.** Independent verification 4 accepts candidate `a49078c2419c81dcbe4ad8169905d18a33e9a159` at `https://pixel-brief-builder.sociobot.in`.
 
-## Repair
+## What was verified
 
-Independent verification 3 found one High defect: after **Reset demo**, the still-hovered `Reset demo` control inherited clay text (`#a64227`) on the moss-bright demo banner (`#b8d979`). The measured contrast was **3.85:1**, and Axe reported a serious `color-contrast` violation at both 1440 px and 390 px.
+- Mandatory first-read passed at desktop and 390 px: the first screen plainly states the job, audience, first action, and one-click sample outcome.
+- `.factory/claims.json` exists; every literal claim command passed separately after `npm ci` (**9/9**).
+- Local `npm test` passed: exact build, typecheck, lint, 8 unit tests, and 22 Playwright tests.
+- The same full gate passed with `PLAYWRIGHT_BASE_URL=https://pixel-brief-builder.sociobot.in`.
+- Independent live flows covered 18/20/22 assets, full completion, canceled/accepted rebuilds, missing input, malformed storage, demo reset/exit, clipboard denial, export, print, offline reload, and service-worker update.
+- Desktop and 390 px route scans had no Axe violations, console/page errors, overflow, keyboard traps, focus failures, reduced-motion failures, or undersized effective touch targets.
+- A full live request log contained only same-origin GETs. Security headers, immutable hashed assets, non-immutable worker caching, real 404 behavior, and all links/routes passed.
+- Local and deployed route documents, worker, hashed JS/CSS, hero images, and social card match byte-for-byte. The deployment is the candidate.
+- Fresh mobile Lighthouse: 100 performance / 100 accessibility / 100 best practices / 100 SEO; LCP 1,299 ms, TBT 73 ms, CLS 0, transfer 76,424 B.
 
-The failure was reproduced against the pre-repair build with the verifier's exact flow: open `/demo`, rebuild for three characters, accept confirmation, click Reset demo while hovered, then run Axe. The new regression first failed at **3.8598777219783056:1** at 1440 px before the CSS repair.
+## Defects and gaps
 
-Repair commit `dcfad33` adds a banner-specific rule: `Reset demo` uses charcoal text and a charcoal focus outline in its hover and `:focus-visible` states. It does not change the existing clay hover treatment for other text buttons.
+Critical: none. High: none. Medium: none. Low: none. No known release gap remains.
 
-`tests/e2e/claims.spec.ts` now has `@regression:reset-demo-contrast`. At **1440×900 and 390×844** it:
+The product has no backend endpoint, unlock call, sign-in, payment, library, or CLI surface, so rate-limit, Entra-tenant, and package-consumer checks do not apply.
 
-- rebuilds and resets the sample as the verifier did;
-- checks the computed foreground/background ratio after the post-reset pointer hover is at least 4.5:1;
-- runs Axe in that hovered state and requires no `color-contrast` violation;
-- removes pointer hover, moves keyboard focus back with `Shift+Tab`, asserts the real `:focus-visible` charcoal style, and checks the focus-state text ratio is at least 4.5:1.
+## Reproduce
 
-The repaired state measures charcoal (`#1b211c`) on moss bright (`#b8d979`), **10.34:1**.
+```bash
+npm ci
+npm test
+PLAYWRIGHT_BASE_URL=https://pixel-brief-builder.sociobot.in npm test
+/opt/fleet/lib/verify-url.sh https://pixel-brief-builder.sociobot.in .factory/evidence/verification-4
+```
 
-## Verification
-
-- Clean install: `npm ci` — passed; `npm audit --audit-level=low` reported 0 vulnerabilities.
-- Full gate: `npm test` — passed: production build, ESLint, 8 Vitest tests, and 22 Chromium Playwright tests.
-- Explicit checks: `npm run typecheck`, `npm run lint`, and `npm run build` — all passed; `dist/index.html` is present.
-- Every literal claim command from `.factory/claims.json` was run separately after the clean install — **9/9 passed**: finite packet, browser-local-only, rebuild confirmation, offline reload, Markdown export, print packet, filename copy, free use, and original prompts.
-- Browser coverage includes desktop and 390 px mobile layouts, keyboard navigation and focus, full Axe checks across the real routes, the post-reset hover Axe regression, privacy/same-origin request checks, local storage isolation, offline reload, and a two-version service-worker update test.
-- Response-policy and delivery coverage is in `tests/unit/release-policy.test.ts`: content-hashed app assets, exact service-worker precache URLs, non-immutable worker caching, route-specific initial metadata, and real 404 semantics. The product is a local-first static site; package-consumer, API rate-limit, payment, and sign-in/tenant checks do not apply.
-- Final production bundle from the repair build: JavaScript **26,378 B raw / 9,339 B gzip**; CSS **20,832 B raw / 5,229 B gzip**; no downloaded font files. These remain under the static product budgets.
-
-## Deployment and known gaps
-
-The repair commits `dcfad33` and `5fb3cb2` are pushed to `origin/main`. The tested `dist/` artifact was explicitly deployed to the existing Azure Static Web App `sf-pixel-brief-builder` production environment (`https://polite-plant-006c83b10.7.azurestaticapps.net`), which serves `https://pixel-brief-builder.sociobot.in`.
-
-- The public custom domain serves repaired `index-CNHD7iV3.css`, including the banner-specific hover/focus rule.
-- `PLAYWRIGHT_BASE_URL=https://pixel-brief-builder.sociobot.in npm test` passed in full: build, lint, 8 unit tests, and all 22 browser tests, including the exact live reset contrast/Axe regression.
-- Local and deployed SHA-256 values match for `index.html`, CSS, JavaScript, and `sw.js`. The deployed worker is `no-cache, no-store, must-revalidate`; CSP, HSTS, Referrer-Policy, and `X-Content-Type-Options` are present; `/demo` is HTTP 200 and the designed `/missing-tile` page is HTTP 404.
-- Fresh live mobile Lighthouse 13.4.1: performance **100**, accessibility **100**, best practices **100**, SEO **100**; LCP **1,295 ms**, CLS **0**, TBT **45 ms**, transfer **76,451 B**.
-
-No product behavior that passed verification 3 was changed. There are no known gaps.
+Full evidence and exact hashes are in [.factory/verification-4.md](verification-4.md). Verification artifacts are under `.factory/evidence/verification-4/`.
