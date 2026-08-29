@@ -41,7 +41,7 @@ npm run build
 
 ## Deploy
 
-Deploy `dist/` as an Azure Static Web App. `public/staticwebapp.config.json` supplies SPA routing, cache rules, and security headers. No DNS, billing, environment variable, or server is required.
+Deploy `dist/` as an Azure Static Web App. `public/staticwebapp.config.json` supplies route-document rewrites, cache rules, and security headers. No DNS, billing, environment variable, or server is required.
 
 ## Privacy and content
 
