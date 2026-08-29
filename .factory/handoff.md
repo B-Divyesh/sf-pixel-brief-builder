@@ -15,7 +15,7 @@ Repair commit `dcfad33` adds a banner-specific rule: `Reset demo` uses charcoal 
 - rebuilds and resets the sample as the verifier did;
 - checks the computed foreground/background ratio after the post-reset pointer hover is at least 4.5:1;
 - runs Axe in that hovered state and requires no `color-contrast` violation;
-- removes pointer hover, gives the control keyboard focus, and checks the focus-state text ratio is at least 4.5:1.
+- removes pointer hover, moves keyboard focus back with `Shift+Tab`, asserts the real `:focus-visible` charcoal style, and checks the focus-state text ratio is at least 4.5:1.
 
 The repaired state measures charcoal (`#1b211c`) on moss bright (`#b8d979`), **10.34:1**.
 

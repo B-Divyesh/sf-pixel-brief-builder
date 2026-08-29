@@ -70,18 +70,22 @@ test('Reset demo preserves AA text contrast after pointer reset and keyboard foc
       foreground: getComputedStyle(element).color,
       background: getComputedStyle(element.closest('.demo-banner')!).backgroundColor,
     }));
+    expect(hoverColors.foreground).toBe('rgb(27, 33, 28)');
     expect(contrastRatio(hoverColors.foreground, hoverColors.background), `Reset demo hover contrast at ${viewport.width}px`).toBeGreaterThanOrEqual(4.5);
 
     const axe = await new AxeBuilder({ page }).analyze();
     expect(axe.violations.filter((violation) => violation.id === 'color-contrast'), `Reset demo hover axe contrast at ${viewport.width}px`).toEqual([]);
 
     await page.mouse.move(0, 0);
-    await reset.focus();
+    await page.getByRole('button', { name: 'Start for real' }).focus();
+    await page.keyboard.press('Shift+Tab');
     await expect(reset).toBeFocused();
+    expect(await reset.evaluate((element) => element.matches(':focus-visible'))).toBe(true);
     const focusColors = await reset.evaluate((element) => ({
       foreground: getComputedStyle(element).color,
       background: getComputedStyle(element.closest('.demo-banner')!).backgroundColor,
     }));
+    expect(focusColors.foreground).toBe('rgb(27, 33, 28)');
     expect(contrastRatio(focusColors.foreground, focusColors.background), `Reset demo focus contrast at ${viewport.width}px`).toBeGreaterThanOrEqual(4.5);
   }
 });
