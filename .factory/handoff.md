@@ -1,4 +1,8 @@
-# Pixel Brief Builder — polish-3 handoff
+# Pixel Brief Builder — verification 3 handoff: FAIL
+
+> **Release decision, 2026-08-29 UTC: FAIL.** Independent verification of candidate `aa211d5b84e68cbccd04da36f146110a8f49b0e8` against `https://pixel-brief-builder.sociobot.in` found a release-blocking serious accessibility defect. After **Reset demo**, the button remains hovered and its clay text (`#a64227`) on the moss-bright demo banner (`#b8d979`) has only **3.85:1** contrast, below the required 4.5:1. Playwright axe reports `color-contrast` with serious impact at both 1440 px and 390 px. The deployment hashes match this candidate, so this is not a deployment-only failure. Do not release until it is repaired and regression-tested.
+>
+> Full fresh evidence is in `.factory/verification-3.md`. It also records that the clean install, all nine literal claim commands, local and deployed 21-test Playwright suites, type/lint/build, privacy/network/header/cache checks, offline/PWA behavior, keyboard/mobile flows, bundle budgets, and Lighthouse all passed. The historical polish-3 notes below predate this independent failure and must not be treated as the current release decision.
 
 ## Outcome
 
