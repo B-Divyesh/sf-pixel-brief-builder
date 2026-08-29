@@ -2,14 +2,14 @@
   {
     "id": "finite-packet",
     "claim": "Creates an 18, 20, or 22-item art packet from four choices",
-    "where": "builder and README",
+    "where": "home metadata, hero caption, builder, and README",
     "test": "npm test -- --grep @claim:finite-packet",
-    "sandbox": "fresh browser context at /demo; assert 20 seeded items, then rebuild with three characters and assert 22"
+    "sandbox": "fresh browser context at /demo; assert 20 seeded items, then rebuild with one and three characters and assert 18 and 22"
   },
   {
     "id": "browser-local-only",
     "claim": "Saves only in this browser and keeps demo data separate",
-    "where": "landing facts, demo banner, privacy page, and README",
+    "where": "landing facts, demo metadata and banner, privacy page, and README",
     "test": "npm test -- --grep @claim:browser-local-only",
     "sandbox": "fresh browser context; build a real packet, edit and reset /demo, exit to real mode, assert the real value is byte-identical, the demo key is discarded, and all requests stay same-origin"
   },
@@ -29,24 +29,24 @@
   },
   {
     "id": "markdown-export",
-    "claim": "Exports the complete packet as Markdown",
+    "claim": "Exports the art checklist and six-panel storyboard as Markdown",
     "where": "packet action and README",
     "test": "npm test -- --grep @claim:markdown-export",
     "sandbox": "demo data; download the file and assert one checklist line per asset plus six storyboard lines"
   },
   {
     "id": "print-packet",
-    "claim": "Provides a printable checklist, tile guide, and six-panel storyboard",
-    "where": "packet action and README",
+    "claim": "Provides a printable checklist, 16×16 tile template, and six-panel storyboard",
+    "where": "print metadata, packet action, and README",
     "test": "npm test -- --grep @claim:print-packet",
-    "sandbox": "demo data; open the print route and assert 20 checklist rows, a visible 256-cell tile guide in 16 columns under print media, and six storyboard panels"
+    "sandbox": "demo data; open the print route and assert 20 checklist rows, a visible 256-cell tile template in 16 columns under print media, and six storyboard panels"
   },
   {
     "id": "filename-copy",
     "claim": "Copies one safe filename per asset",
-    "where": "packet action",
+    "where": "home metadata, packet action, and README",
     "test": "npm test -- --grep @claim:filename-copy",
-    "sandbox": "demo data with clipboard permission; copy and assert 20 newline-separated filenames"
+    "sandbox": "demo data with clipboard permission; copy and assert 20 newline-separated filenames matching the safe lowercase .png pattern"
   },
   {
     "id": "free-use",
@@ -58,7 +58,7 @@
   {
     "id": "original-prompts",
     "claim": "Every asset has a drawing prompt, with original-shape and no-known-character reminders",
-    "where": "generated packet, landing handoff, and README",
+    "where": "generated packet, landing details, and README",
     "test": "npm test -- --grep @claim:original-prompts",
     "sandbox": "demo data; assert all 20 assets have a Draw prompt and the concept and character prompt contain the original-work constraint"
   }

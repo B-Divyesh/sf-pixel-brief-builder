@@ -29,6 +29,32 @@ describe('production release policy', () => {
     const workerPolicy = config.routes.find((route) => route.route === '/sw.js');
     expect(workerPolicy?.headers?.['Cache-Control']).toMatch(/no-cache/);
     expect(workerPolicy?.headers?.['Cache-Control']).not.toMatch(/immutable/);
-    expect(config.responseOverrides['404']).toEqual({ rewrite: '/index.html', statusCode: 404 });
+    expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html', statusCode: 404 });
+    expect(config.routes).toEqual(expect.arrayContaining([
+      expect.objectContaining({ route: '/demo', rewrite: '/demo.html' }),
+      expect.objectContaining({ route: '/privacy', rewrite: '/privacy.html' }),
+      expect.objectContaining({ route: '/terms', rewrite: '/terms.html' }),
+      expect.objectContaining({ route: '/print', rewrite: '/print.html' }),
+    ]));
+  });
+
+  it('builds route-specific initial metadata documents', async () => {
+    const cases = [
+      ['demo.html', 'Demo — Pixel Brief Builder', '/demo'],
+      ['privacy.html', 'Privacy — Pixel Brief Builder', '/privacy'],
+      ['terms.html', 'Terms — Pixel Brief Builder', '/terms'],
+      ['print.html', 'Print packet — Pixel Brief Builder', '/print'],
+      ['404.html', 'Page not found — Pixel Brief Builder', '/404'],
+    ] as const;
+
+    for (const [file, title, canonicalPath] of cases) {
+      const html = await readFile(`dist/${file}`, 'utf8');
+      const canonical = `https://pixel-brief-builder.sociobot.in${canonicalPath}`;
+      expect(html).toContain(`<title>${title}</title>`);
+      expect(html).toContain(`<link rel="canonical" href="${canonical}"`);
+      expect(html).toContain(`<meta property="og:title" content="${title}"`);
+      expect(html).toContain(`<meta property="og:url" content="${canonical}"`);
+      expect(html).toContain(`<meta name="twitter:title" content="${title}"`);
+    }
   });
 });

@@ -9,6 +9,10 @@ test('sample creates a finite packet @claim:finite-packet', async ({ page }) => 
   await expect(page.locator('[data-asset-id]:checked')).toHaveCount(5);
 
   page.on('dialog', (dialog) => dialog.accept());
+  await page.getByLabel('Character count').selectOption('1');
+  await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
+  await expect(page.locator('[data-asset-id]')).toHaveCount(18);
+
   await page.getByLabel('Character count').selectOption('3');
   await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
   await expect(page.locator('[data-asset-id]')).toHaveCount(22);
@@ -82,6 +86,8 @@ test('demo reloads offline after one visit @claim:offline-reload', async ({ page
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Plan the Moss Beacon art' })).toBeVisible();
+  await expect(page.locator('[data-asset-id]')).toHaveCount(20);
+  await expect(page.locator('[data-asset-id]:checked')).toHaveCount(5);
   await expect(page.getByText('You are offline. Your saved packet still works here.')).toBeVisible();
 });
 
@@ -97,6 +103,7 @@ test('export contains every checklist row @claim:markdown-export', async ({ page
   const content = Buffer.concat(chunks).toString('utf8');
   expect(content.match(/^- \[[ x]\]/gm)).toHaveLength(20);
   expect(content.match(/^\d\. /gm)).toHaveLength(6);
+  expect(content).toContain('## Six-panel storyboard');
 });
 
 test('print route includes the checklist and storyboard @claim:print-packet', async ({ page }) => {
@@ -120,7 +127,9 @@ test('filenames copy as one line per asset @claim:filename-copy', async ({ page,
   await page.goto('/demo');
   await page.getByRole('button', { name: 'Copy filenames' }).click();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied.trim().split('\n')).toHaveLength(20);
+  const filenames = copied.trim().split('\n');
+  expect(filenames).toHaveLength(20);
+  expect(filenames.every((name) => /^[a-z0-9_]+\.png$/.test(name))).toBe(true);
   expect(copied).toContain('hero_idle_16.png');
 });
 
@@ -172,12 +181,12 @@ test('seeded print headings pass axe', async ({ page }) => {
 
 test('route metadata stays coherent', async ({ page }) => {
   const cases = [
-    ['/', 'Pixel Brief Builder — plan a tiny game art list', 'Choose four limits and get a small game art checklist, tile guide, storyboard, and safe filenames.'],
+    ['/', 'Pixel Brief Builder — plan a tiny game art list', 'Choose four limits and get an art checklist, 16×16 tile template, six-panel storyboard, and safe filenames.'],
     ['/demo', 'Demo — Pixel Brief Builder', 'Try a complete sample game art packet without changing your real packet.'],
     ['/?demo=1', 'Demo — Pixel Brief Builder', 'Try a complete sample game art packet without changing your real packet.'],
     ['/privacy', 'Privacy — Pixel Brief Builder', 'Read how Pixel Brief Builder keeps game packets in your browser.'],
     ['/terms', 'Terms — Pixel Brief Builder', 'Read the plain terms for using Pixel Brief Builder.'],
-    ['/print?demo=1', 'Print packet — Pixel Brief Builder', 'Print your game art checklist, tile guide, and six-panel storyboard.'],
+    ['/print?demo=1', 'Print packet — Pixel Brief Builder', 'Print your checklist, 16×16 tile template, and six-panel storyboard.'],
     ['/missing-tile', 'Page not found — Pixel Brief Builder', 'Return to Pixel Brief Builder.'],
   ] as const;
 
@@ -197,6 +206,31 @@ test('route metadata stays coherent', async ({ page }) => {
   }
 });
 
+test('direct route responses contain route metadata before JavaScript runs', async ({ request }) => {
+  const cases = [
+    ['/demo', 200, 'Demo — Pixel Brief Builder', 'Try a complete sample game art packet without changing your real packet.', '/demo'],
+    ['/privacy', 200, 'Privacy — Pixel Brief Builder', 'Read how Pixel Brief Builder keeps game packets in your browser.', '/privacy'],
+    ['/terms', 200, 'Terms — Pixel Brief Builder', 'Read the plain terms for using Pixel Brief Builder.', '/terms'],
+    ['/print?demo=1', 200, 'Print packet — Pixel Brief Builder', 'Print your checklist, 16×16 tile template, and six-panel storyboard.', '/print'],
+    ['/missing-tile', 404, 'Page not found — Pixel Brief Builder', 'Return to Pixel Brief Builder.', '/404'],
+  ] as const;
+
+  for (const [route, status, title, description, canonicalPath] of cases) {
+    const response = await request.get(route, { headers: { Accept: 'text/html' } });
+    expect(response.status(), `${route} response status`).toBe(status);
+    const html = await response.text();
+    const canonical = `https://pixel-brief-builder.sociobot.in${canonicalPath}`;
+    expect(html).toContain(`<title>${title}</title>`);
+    expect(html).toContain(`<meta name="description" content="${description}"`);
+    expect(html).toContain(`<link rel="canonical" href="${canonical}"`);
+    expect(html).toContain(`<meta property="og:title" content="${title}"`);
+    expect(html).toContain(`<meta property="og:description" content="${description}"`);
+    expect(html).toContain(`<meta property="og:url" content="${canonical}"`);
+    expect(html).toContain(`<meta name="twitter:title" content="${title}"`);
+    expect(html).toContain(`<meta name="twitter:description" content="${description}"`);
+  }
+});
+
 test('routing restores focus, announces pages, and keeps legal and 404 routes real', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Privacy', exact: true }).first().click();
@@ -212,7 +246,7 @@ test('routing restores focus, announces pages, and keeps legal and 404 routes re
   await expect(page.getByRole('heading', { level: 1, name: 'Your packet stays on your device' })).toBeFocused();
 
   const missing = await page.goto('/missing-tile');
-  expect(missing?.status()).toBe(process.env.PLAYWRIGHT_BASE_URL ? 404 : 200);
+  expect(missing?.status()).toBe(404);
   await expect(page.getByRole('heading', { level: 1, name: 'This path ends at concrete' })).toBeVisible();
   await page.getByRole('link', { name: 'Return to the builder' }).click();
   await expect(page).toHaveURL('/');

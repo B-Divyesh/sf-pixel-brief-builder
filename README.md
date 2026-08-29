@@ -2,14 +2,14 @@
 
 Plan a tiny game art list before you start drawing.
 
-Pixel Brief Builder is for an adult and child making a game over one weekend. Four choices create an 18, 20, or 22-item art packet with original prompts, safe filenames, a tile guide, and a six-panel storyboard.
+Pixel Brief Builder is for an adult and child making a game over one weekend. Four choices create an 18, 20, or 22-item art packet with prompts, safe filenames, a 16×16 tile template, and a six-panel storyboard.
 
 [Try the sample](https://pixel-brief-builder.sociobot.in/demo) with five assets already finished. Demo progress uses separate browser storage and never changes a real packet.
 
 ## What it includes
 
 - A finite checklist grouped into characters, world tiles, the main mechanic, and screen effects.
-- A four-colour tile template and six printable story panels.
+- A four-colour 16×16 tile template and a printable six-panel storyboard.
 - Markdown export and filename copying.
 - Browser-only progress with a separate demo namespace.
 - Offline reload after the first visit.

@@ -12,6 +12,7 @@ import {
   type MechanicId,
   type PaletteId,
 } from './generator';
+import { metadataFor, SITE_ORIGIN } from './route-meta';
 
 const REAL_KEY = 'pixel-brief-builder:real:v1';
 const DEMO_KEY = 'demo:pixel-brief-builder:v1';
@@ -123,7 +124,6 @@ function homePage(): string {
     <main id="main">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">A weekend-sized art plan</p>
           <h1 tabindex="-1">Plan your tiny game art first</h1>
           <p class="lede">For an adult and child making a weekend game who need a small, shared drawing list.</p>
           <div class="hero-action"><a class="button button-primary" href="/?demo=1" data-route>Try it with sample data</a><span>Opens a finished 20-item packet.</span></div>
@@ -138,20 +138,19 @@ function homePage(): string {
             <source media="(max-width: 600px)" srcset="/assets/hero-workbench-mobile.webp" />
             <img src="/assets/hero-workbench.webp" width="1200" height="800" fetchpriority="high" alt="An adult and child arrange blank game tiles and storyboard cards on a concrete table." />
           </picture>
-          <figcaption>Start with the pieces your weekend can hold.</figcaption>
+          <figcaption>The planner makes a list of 18, 20, or 22 game art assets.</figcaption>
         </figure>
       </section>
       ${builderSection(packet, false)}
       <section class="steps slab-section" aria-labelledby="steps-heading">
-        <div><p class="eyebrow">Three short moves</p><h2 id="steps-heading">How the art packet works</h2></div>
+        <div><p class="eyebrow">Three steps</p><h2 id="steps-heading">How the art packet works</h2></div>
         <ol>
-          <li><span>01</span><h3>Pick four limits</h3><p>Choose the game shape, colours, cast, and main action.</p></li>
-          <li><span>02</span><h3>Share one list</h3><p>Draw from named files, sizes, prompts, and a four-colour tile guide.</p></li>
-          <li><span>03</span><h3>Finish the packet</h3><p>Tick each asset, print six scenes, or export the whole brief.</p></li>
+          <li><span>01</span><h3>Pick four limits</h3><p>Choose the game shape, colours, character count, and main action.</p></li>
+          <li><span>02</span><h3>Share one list</h3><p>Draw from named files, sizes, prompts, and a four-colour 16×16 tile template.</p></li>
+          <li><span>03</span><h3>Finish the packet</h3><p>Tick each asset, print the six-panel storyboard, or export the whole brief.</p></li>
         </ol>
       </section>
       <section class="limits" aria-labelledby="limits-heading">
-        <p class="eyebrow">A finite handoff</p>
         <h2 id="limits-heading">Take the packet to your drawing tool</h2>
         <p>The packet gives your team a finite original plan. Each prompt names what to draw.</p>
         <p>Your packet stays in this browser. No account, child profile, analytics, or outside script is used.</p>
@@ -315,21 +314,12 @@ function routeView(): string {
   return notFoundPage();
 }
 
-const routeMeta: Record<string, { title: string; description: string }> = {
-  '/': { title: 'Pixel Brief Builder — plan a tiny game art list', description: 'Choose four limits and get a small game art checklist, tile guide, storyboard, and safe filenames.' },
-  '/demo': { title: 'Demo — Pixel Brief Builder', description: 'Try a complete sample game art packet without changing your real packet.' },
-  '/privacy': { title: 'Privacy — Pixel Brief Builder', description: 'Read how Pixel Brief Builder keeps game packets in your browser.' },
-  '/terms': { title: 'Terms — Pixel Brief Builder', description: 'Read the plain terms for using Pixel Brief Builder.' },
-  '/print': { title: 'Print packet — Pixel Brief Builder', description: 'Print your game art checklist, tile guide, and six-panel storyboard.' },
-};
-
 function render(focusHeading = false): void {
   app.innerHTML = `${routeView()}<div class="sr-only" aria-live="polite" id="route-status"></div><div class="toast" role="status" aria-live="polite" hidden></div>`;
-  const metaPath = location.pathname === '/' && isDemoRoute() ? '/demo' : location.pathname;
-  const meta = routeMeta[metaPath] ?? { title: 'Page not found — Pixel Brief Builder', description: 'Return to Pixel Brief Builder.' };
+  const meta = metadataFor(location.pathname, isDemoRoute());
   document.title = meta.title;
   document.querySelector('meta[name="description"]')?.setAttribute('content', meta.description);
-  const routeUrl = `https://pixel-brief-builder.sociobot.in${metaPath}`;
+  const routeUrl = `${SITE_ORIGIN}${meta.canonicalPath}`;
   document.querySelector('link[rel="canonical"]')?.setAttribute('href', routeUrl);
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', meta.title);
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', meta.description);

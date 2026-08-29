@@ -435,7 +435,7 @@ legend { margin-bottom: 10px; }
   .story-section ol { grid-template-columns: 1fr 1fr; }
   .steps li { grid-template-columns: 40px 1fr; }
   .steps li p { grid-column: 2; }
-  .demo-banner { position: relative; align-items: flex-start; flex-direction: column; }
+  .demo-banner { align-items: flex-start; flex-direction: column; }
   .site-footer { grid-template-columns: 1fr; }
   .site-footer > p { grid-column: auto; }
 }

@@ -1,6 +1,6 @@
 # Landing page copy audit
 
-Audited 2026-08-28 against the plain-words rules. Counts treat hyphenated terms and numbers as one word. No sentence exceeds 22 words, and no copy uses a banned marketing word.
+Audited 2026-08-29 against the plain-words rules. Counts treat hyphenated terms and numbers as one word. No sentence exceeds 22 words, and no copy uses a banned marketing word.
 
 ## First screen
 
@@ -10,7 +10,6 @@ Audited 2026-08-28 against the plain-words rules. Counts treat hyphenated terms 
 | Build | 1 | Pass: navigation |
 | Demo | 1 | Pass: navigation |
 | Privacy | 1 | Pass: navigation |
-| A weekend-sized art plan | 4 | Pass: context |
 | Plan your tiny game art first | 6 | Pass: job-led H1 |
 | For an adult and child making a weekend game who need a small, shared drawing list. | 16 | Pass: audience and change |
 | Try it with sample data | 5 | Pass: primary action |
@@ -18,7 +17,7 @@ Audited 2026-08-28 against the plain-words rules. Counts treat hyphenated terms 
 | Free to use. | 3 | Pass: declared claim |
 | Saves only in this browser. | 5 | Pass: declared claim |
 | Works offline after the first visit. | 6 | Pass: declared claim |
-| Start with the pieces your weekend can hold. | 8 | Pass: image caption |
+| The planner makes a list of 18, 20, or 22 game art assets. | 13 | Pass: `finite-packet` fact |
 
 Read aloud: “Plan your tiny game art first, for an adult and child making a weekend game. Try it with sample data.” The job and first action fit in one breath.
 
@@ -36,19 +35,18 @@ Read aloud: “Plan your tiny game art first, for an adult and child making a we
 
 The control labels use one concrete vocabulary: **Game shape**, **Four-colour palette**, **Character count**, and **One main action**.
 
-## Explanation and handoff
+## Explanation and use
 
 | Copy | Words | Result |
 | --- | ---: | --- |
-| Three short moves | 3 | Pass: context |
+| Three steps | 2 | Pass: section count |
 | How the art packet works | 5 | Pass: H2 |
 | Pick four limits | 3 | Pass: H3 |
-| Choose the game shape, colours, cast, and main action. | 9 | Pass |
+| Choose the game shape, colours, character count, and main action. | 10 | Pass: matches form terminology |
 | Share one list | 3 | Pass: H3 |
-| Draw from named files, sizes, prompts, and a four-colour tile guide. | 11 | Pass |
+| Draw from named files, sizes, prompts, and a four-colour 16×16 tile template. | 12 | Pass: exact output name |
 | Finish the packet | 3 | Pass: H3 |
-| Tick each asset, print six scenes, or export the whole brief. | 11 | Pass |
-| A finite handoff | 3 | Pass: context |
+| Tick each asset, print the six-panel storyboard, or export the whole brief. | 12 | Pass: exact output name |
 | Take the packet to your drawing tool | 7 | Pass: H2 |
 | The packet gives your team a finite original plan. | 9 | Pass: declared claims |
 | Each prompt names what to draw. | 6 | Pass: declared claim |
@@ -73,7 +71,8 @@ The control labels use one concrete vocabulary: **Game shape**, **Four-colour pa
 | A completion control | finished mark |
 | The four setup decisions | limits |
 | The colour restriction | palette |
-| The six game moments | storyboard |
+| The six game moments | six-panel storyboard |
+| The printable pixel grid | 16×16 tile template |
 | The isolated sample | demo |
 | A downloaded plan | brief |
 
@@ -81,4 +80,4 @@ The control labels use one concrete vocabulary: **Game shape**, **Four-colour pa
 
 ## Catalog line
 
-“Plan a tiny game art list before you start drawing.” is verb-first, contains ten words, and is 51 characters excluding the newline.
+“Build a tiny game art checklist before anyone starts drawing.” is verb-first, contains ten words, and is 61 characters excluding the newline.
