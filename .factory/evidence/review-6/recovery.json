@@ -1,0 +1,33 @@
+{
+  "corrupt": {
+    "error": "Your saved packet could not be read. Build a new packet to replace it.",
+    "emptyVisible": true,
+    "recoveredRows": 18,
+    "repairedJson": true
+  },
+  "blockedStorage": {
+    "rows": 18,
+    "error": "This browser blocked saving. Keep this tab open or allow site storage.",
+    "exportDownloaded": false,
+    "toastAfterExport": {
+      "hidden": true,
+      "text": ""
+    },
+    "toastAfterCopy": {
+      "hidden": true,
+      "text": ""
+    },
+    "checkedDom": true,
+    "progress": "0"
+  },
+  "deniedClipboard": "Filenames could not be copied. Export the brief instead.",
+  "emptyPrint": {
+    "heading": "No packet is ready",
+    "recovery": "/#builder"
+  },
+  "complete": {
+    "checked": 20,
+    "note": "Packet complete. Your engine can stay small.",
+    "progress": "20"
+  }
+}
