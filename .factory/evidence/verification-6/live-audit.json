@@ -1,0 +1,216 @@
+{
+  "runAt": "2026-09-06T06:31:52.207Z",
+  "base": "https://pixel-brief-builder.sociobot.in",
+  "firstScreens": {
+    "desktop": {
+      "h1": "Plan your tiny game art first",
+      "audience": "For an adult and child making a weekend game who need a small, shared drawing list.",
+      "firstAction": "Try it with sample data",
+      "actionResult": "Opens a finished 20-item packet.",
+      "actionBottom": 668.265625,
+      "viewportHeight": 900
+    },
+    "phone": {
+      "h1": "Plan your tiny game art first",
+      "audience": "For an adult and child making a weekend game who need a small, shared drawing list.",
+      "firstAction": "Try it with sample data",
+      "actionResult": "Opens a finished 20-item packet.",
+      "actionBottom": 460.765625,
+      "viewportHeight": 844
+    }
+  },
+  "demo": {
+    "desktop": {
+      "rows": 20,
+      "marked": 5,
+      "title": "Moss Beacon Night",
+      "safeFilenames": 20,
+      "prompts": 20,
+      "banner": true,
+      "reset": true,
+      "startForReal": true
+    },
+    "phone": {
+      "rows": 20,
+      "marked": 5,
+      "title": "Moss Beacon Night",
+      "safeFilenames": 20,
+      "prompts": 20,
+      "banner": true,
+      "reset": true,
+      "startForReal": true
+    }
+  },
+  "isolation": {
+    "realPacketPreserved": true,
+    "sampleEditCount": 6,
+    "resetCount": 5,
+    "demoKeyDiscarded": true
+  },
+  "recovery": {
+    "blockedStorage": {
+      "rowsBuilt": 18,
+      "progress": "1 of 18",
+      "exportRows": 18,
+      "exportMarks": 1,
+      "copiedNames": 18,
+      "rebuiltRows": 22,
+      "printRows": 22,
+      "tileCells": 256,
+      "storyPanels": 6,
+      "returnRows": 22,
+      "persisted": false
+    },
+    "invalidStoredData": "Your saved packet could not be read. Build a new packet to replace it.",
+    "boundaries": {
+      "oneCharacter": 18,
+      "twoCharacters": 20,
+      "threeCharacters": 22,
+      "completion": "22 of 22"
+    },
+    "invalidSetup": "One setup choice is missing. Choose all four limits and try again.",
+    "clipboardDenied": "Filenames could not be copied. Export the brief instead.",
+    "emptyPrint": {
+      "message": "No packet is ready",
+      "action": "Build an art packet"
+    }
+  },
+  "accessibility": {
+    "desktop": {
+      "skipFocused": true,
+      "checklistFocused": true,
+      "reducedMotion": {
+        "scroll": "auto",
+        "duration": 0.00001
+      },
+      "routes": [
+        {
+          "route": "/",
+          "status": 200,
+          "h1": "Plan your tiny game art first",
+          "title": "Pixel Brief Builder — plan a tiny game art list",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/demo",
+          "status": 200,
+          "h1": "Plan the Moss Beacon art",
+          "title": "Demo — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/privacy",
+          "status": 200,
+          "h1": "Your packet stays on your device",
+          "title": "Privacy — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/terms",
+          "status": 200,
+          "h1": "Use the planner for original work",
+          "title": "Terms — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/print?demo=1",
+          "status": 200,
+          "h1": "Print your tiny game plan",
+          "title": "Print packet — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/missing-tile",
+          "status": 404,
+          "h1": "Page not found",
+          "title": "Page not found — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        }
+      ]
+    },
+    "phone": {
+      "skipFocused": true,
+      "checklistFocused": true,
+      "reducedMotion": {
+        "scroll": "auto",
+        "duration": 0.00001
+      },
+      "routes": [
+        {
+          "route": "/",
+          "status": 200,
+          "h1": "Plan your tiny game art first",
+          "title": "Pixel Brief Builder — plan a tiny game art list",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/demo",
+          "status": 200,
+          "h1": "Plan the Moss Beacon art",
+          "title": "Demo — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/privacy",
+          "status": 200,
+          "h1": "Your packet stays on your device",
+          "title": "Privacy — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/terms",
+          "status": 200,
+          "h1": "Use the planner for original work",
+          "title": "Terms — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/print?demo=1",
+          "status": 200,
+          "h1": "Print your tiny game plan",
+          "title": "Print packet — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        },
+        {
+          "route": "/missing-tile",
+          "status": 404,
+          "h1": "Page not found",
+          "title": "Page not found — Pixel Brief Builder",
+          "axeViolations": 0,
+          "overflow": 0
+        }
+      ]
+    }
+  },
+  "routes": {},
+  "privacy": {
+    "desktop": {
+      "requestCount": 4,
+      "sameOrigin": true,
+      "errors": []
+    },
+    "phone": {
+      "requestCount": 4,
+      "sameOrigin": true,
+      "errors": []
+    }
+  },
+  "offline": {
+    "reload": true,
+    "rows": 20,
+    "marks": 5,
+    "status": true
+  },
+  "verdict": "PASS"
+}
