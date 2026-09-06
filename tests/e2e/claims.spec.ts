@@ -192,6 +192,59 @@ test('the real builder works without login or payment @claim:free-use', async ({
   await expect(page.getByText('Free to use.')).toBeVisible();
 });
 
+test('a packet stays usable in memory when browser storage rejects writes', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => {
+      throw new DOMException('Storage writes are blocked for this test.', 'SecurityError');
+    };
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Build my art packet' }).click();
+  await expect(page.locator('[data-asset-id]')).toHaveCount(18);
+  await expect(page.getByRole('alert')).toContainText('This browser blocked saving. Keep this tab open or allow site storage.');
+  expect(await page.evaluate(() => localStorage.getItem('pixel-brief-builder:real:v1'))).toBeNull();
+
+  await page.locator('[data-asset-id]').first().check();
+  await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
+  await expect(page.getByText('1 of 18', { exact: true })).toBeVisible();
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export brief' }).click();
+  const download = await downloadPromise;
+  const stream = await download.createReadStream();
+  const chunks: Buffer[] = [];
+  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+  const content = Buffer.concat(chunks).toString('utf8');
+  expect(content.match(/^- \[[ x]\]/gm)).toHaveLength(18);
+  expect(content.match(/^- \[x\]/gm)).toHaveLength(1);
+
+  await page.getByRole('button', { name: 'Copy filenames' }).click();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied.trim().split('\n')).toHaveLength(18);
+  expect(copied.trim().split('\n').every((name) => /^[a-z0-9_]+\.png$/.test(name))).toBe(true);
+
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.getByLabel('Character count').selectOption('3');
+  await page.getByRole('button', { name: 'Rebuild my art packet' }).click();
+  await expect(page.locator('[data-asset-id]')).toHaveCount(22);
+  await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
+  await expect(page.getByRole('alert')).toContainText('This browser blocked saving.');
+
+  await page.getByRole('link', { name: 'Open printable packet' }).click();
+  await expect(page).toHaveURL('/print');
+  await expect(page.locator('[data-asset-id]')).toHaveCount(22);
+  await expect(page.locator('.tile-guide > i')).toHaveCount(256);
+  await expect(page.locator('.story-section li')).toHaveCount(6);
+  await expect(page.getByRole('alert')).toContainText('This browser blocked saving.');
+
+  await page.getByRole('link', { name: 'Back to builder' }).click();
+  await expect(page).toHaveURL('/#builder');
+  await expect(page.locator('[data-asset-id]')).toHaveCount(22);
+  await expect(page.getByRole('alert')).toContainText('This browser blocked saving.');
+});
+
 test('generated prompts require original shapes @claim:original-prompts', async ({ page }) => {
   await page.goto('/demo');
   const prompts = page.locator('.asset-row small');

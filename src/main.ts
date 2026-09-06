@@ -23,6 +23,8 @@ const app: HTMLDivElement = root;
 
 let saveProblem = '';
 let statusMessage = '';
+type TabPacket = { packet: BriefPacket | null; problem: string };
+const tabPackets = new Map<string, TabPacket>();
 
 const demoConfig: BriefConfig = { genre: 'quest', palette: 'moss', characters: 2, mechanic: 'light' };
 const defaultConfig: BriefConfig = { genre: 'platformer', palette: 'moss', characters: 1, mechanic: 'collect' };
@@ -45,9 +47,19 @@ function validConfig(value: unknown): value is BriefConfig {
 }
 
 function loadPacket(demo = isDemoRoute()): BriefPacket | null {
+  const key = storageKey(demo);
+  const tabPacket = tabPackets.get(key);
+  if (tabPacket) {
+    saveProblem = tabPacket.problem;
+    return tabPacket.packet;
+  }
   try {
-    const raw = localStorage.getItem(storageKey(demo));
-    if (!raw) return null;
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      saveProblem = '';
+      tabPackets.set(key, { packet: null, problem: '' });
+      return null;
+    }
     const stored = JSON.parse(raw) as Partial<BriefPacket>;
     if (!validConfig(stored.config)) throw new Error('Invalid saved setup');
     const clean = generateBrief(stored.config, stored.createdAt ? new Date(stored.createdAt) : new Date());
@@ -55,25 +67,49 @@ function loadPacket(demo = isDemoRoute()): BriefPacket | null {
     clean.completed = Array.isArray(stored.completed)
       ? stored.completed.filter((id): id is string => typeof id === 'string' && validIds.has(id))
       : [];
+    saveProblem = '';
+    tabPackets.set(key, { packet: clean, problem: '' });
     return clean;
   } catch {
     saveProblem = 'Your saved packet could not be read. Build a new packet to replace it.';
+    tabPackets.set(key, { packet: null, problem: saveProblem });
     return null;
   }
 }
 
 function savePacket(packet: BriefPacket, demo = isDemoRoute()): void {
+  const key = storageKey(demo);
+  const tabPacket: TabPacket = { packet, problem: '' };
+  tabPackets.set(key, tabPacket);
   try {
-    localStorage.setItem(storageKey(demo), JSON.stringify(packet));
+    localStorage.setItem(key, JSON.stringify(packet));
     saveProblem = '';
   } catch {
     saveProblem = 'This browser blocked saving. Keep this tab open or allow site storage.';
+    tabPacket.problem = saveProblem;
+  }
+}
+
+function clearPacket(demo: boolean): void {
+  const key = storageKey(demo);
+  const tabPacket: TabPacket = { packet: null, problem: '' };
+  tabPackets.set(key, tabPacket);
+  try {
+    localStorage.removeItem(key);
+    saveProblem = '';
+  } catch {
+    saveProblem = 'This browser blocked saving. Keep this tab open or allow site storage.';
+    tabPacket.problem = saveProblem;
   }
 }
 
 function seedDemo(): BriefPacket {
   const saved = loadPacket(true);
   if (saved) return saved;
+  return resetDemoPacket();
+}
+
+function resetDemoPacket(): BriefPacket {
   const packet = generateBrief(demoConfig);
   packet.completed = packet.assets.slice(0, 5).map((item) => item.id);
   savePacket(packet, true);
@@ -296,7 +332,7 @@ function printPage(): string {
   const packet = loadPacket(isDemoRoute());
   return `${demoBanner()}${header()}<main id="main" class="print-page">
     <p class="eyebrow">Print packet</p><h1 tabindex="-1">Print your tiny game plan</h1>
-    ${packet ? `<div class="print-toolbar"><button class="button button-primary" type="button" data-action="print">Print packet</button><a href="${isDemoRoute() ? '/demo' : '/#builder'}" ${isDemoRoute() ? 'data-route' : ''}>Back to builder</a></div>${packetView(packet, isDemoRoute(), true)}` : `<div class="empty-packet"><h2>No packet is ready</h2><p>Build an art packet before opening the print page.</p><a class="button button-primary" href="/#builder">Build an art packet</a></div>`}
+    ${packet ? `<div class="print-toolbar"><button class="button button-primary" type="button" data-action="print">Print packet</button><a href="${isDemoRoute() ? '/demo' : '/#builder'}" data-route>Back to builder</a></div>${packetView(packet, isDemoRoute(), true)}` : `<div class="empty-packet"><h2>No packet is ready</h2><p>Build an art packet before opening the print page.</p><a class="button button-primary" href="/#builder" data-route>Build an art packet</a></div>`}
   </main>${footer()}`;
 }
 
@@ -397,12 +433,12 @@ function onCheck(event: Event): void {
 function onAction(event: Event): void {
   const action = (event.currentTarget as HTMLElement).dataset.action;
   if (action === 'reset-demo') {
-    localStorage.removeItem(DEMO_KEY);
-    seedDemo();
+    clearPacket(true);
+    resetDemoPacket();
     render();
     showToast('Demo reset to five finished assets.');
   } else if (action === 'start-real') {
-    localStorage.removeItem(DEMO_KEY);
+    clearPacket(true);
     navigate('/#builder');
   } else if (action === 'next-asset') {
     const packet = loadPacket();
