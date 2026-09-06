@@ -1,6 +1,6 @@
 # Landing page copy audit
 
-Audited 2026-08-29 against the plain-words rules. Counts treat hyphenated terms and numbers as one word. No sentence exceeds 22 words, and no copy uses a banned marketing word.
+Re-audited 2026-09-06 against the plain-words rules. Counts treat hyphenated terms and numbers as one word. No sentence exceeds 22 words, and no copy uses a banned marketing word.
 
 ## First screen
 

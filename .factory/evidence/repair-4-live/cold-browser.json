@@ -1,0 +1,82 @@
+{
+  "firstScreens": {
+    "desktop": {
+      "title": "Pixel Brief Builder — plan a tiny game art list",
+      "job": "Plan your tiny game art first",
+      "audience": "For an adult and child making a weekend game who need a small, shared drawing list.",
+      "firstAction": "Try it with sample data",
+      "actionResult": "Opens a finished 20-item packet.",
+      "facts": [
+        "Free to use.",
+        "Saves only in this browser.",
+        "Works offline after the first visit."
+      ],
+      "scrollY": 0,
+      "h1Visible": true,
+      "actionVisible": true,
+      "actionBottom": 668.265625,
+      "viewportHeight": 900,
+      "errors": []
+    },
+    "phone": {
+      "title": "Pixel Brief Builder — plan a tiny game art list",
+      "job": "Plan your tiny game art first",
+      "audience": "For an adult and child making a weekend game who need a small, shared drawing list.",
+      "firstAction": "Try it with sample data",
+      "actionResult": "Opens a finished 20-item packet.",
+      "facts": [
+        "Free to use.",
+        "Saves only in this browser.",
+        "Works offline after the first visit."
+      ],
+      "scrollY": 0,
+      "h1Visible": true,
+      "actionVisible": true,
+      "actionBottom": 460.765625,
+      "viewportHeight": 844,
+      "errors": []
+    }
+  },
+  "sample": {
+    "desktop": {
+      "url": "https://pixel-brief-builder.sociobot.in/?demo=1",
+      "title": "Demo — Pixel Brief Builder",
+      "packet": "Moss Beacon Night",
+      "rows": 20,
+      "checked": 5,
+      "banner": "Demo — sample data, nothing is saved to your real packet.\n\nReset demo\nStart for real",
+      "resetVisible": true,
+      "exitVisible": true,
+      "tileCells": 256,
+      "storyPanels": 6,
+      "errors": []
+    },
+    "phone": {
+      "url": "https://pixel-brief-builder.sociobot.in/?demo=1",
+      "title": "Demo — Pixel Brief Builder",
+      "packet": "Moss Beacon Night",
+      "rows": 20,
+      "checked": 5,
+      "banner": "Demo — sample data, nothing is saved to your real packet.\n\nReset demo\nStart for real",
+      "resetVisible": true,
+      "exitVisible": true,
+      "tileCells": 256,
+      "storyPanels": 6,
+      "errors": []
+    }
+  },
+  "isolation": {
+    "changedCount": 6,
+    "resetCount": 5,
+    "realUnchanged": true,
+    "bannerAfterReset": "Demo — sample data, nothing is saved to your real packet.\n\nReset demo\nStart for real"
+  },
+  "blockedStorage": {
+    "rows": 18,
+    "checked": 1,
+    "progress": "1",
+    "copiedNames": 18,
+    "warning": "This browser blocked saving. Keep this tab open or allow site storage.",
+    "persistedValue": null
+  }
+}
