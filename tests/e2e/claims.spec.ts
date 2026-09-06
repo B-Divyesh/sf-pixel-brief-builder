@@ -282,7 +282,7 @@ test('direct route responses contain route metadata before JavaScript runs', asy
   }
 });
 
-test('routing restores focus, announces pages, and keeps legal and 404 routes real', async ({ page }) => {
+test('routing restores focus, announces pages, and gives a missing page a clear recovery route', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Privacy', exact: true }).first().click();
   await expect(page).toHaveURL('/privacy');
@@ -298,9 +298,12 @@ test('routing restores focus, announces pages, and keeps legal and 404 routes re
 
   const missing = await page.goto('/missing-tile');
   expect(missing?.status()).toBe(404);
-  await expect(page.getByRole('heading', { level: 1, name: 'This path ends at concrete' })).toBeVisible();
-  await page.getByRole('link', { name: 'Return to the builder' }).click();
+  const missingPage = page.locator('main.not-found');
+  await expect(missingPage.getByRole('heading', { level: 1 })).toHaveText(/page not found/i);
+  await expect(missingPage).toContainText(/this page does not exist/i);
+  await missingPage.getByRole('link', { name: 'Return to the builder' }).click();
   await expect(page).toHaveURL('/');
+  await expect(page.getByRole('heading', { level: 1, name: 'Plan your tiny game art first' })).toBeFocused();
 });
 
 test('keyboard opens the demo and reaches a checklist item', async ({ page }) => {

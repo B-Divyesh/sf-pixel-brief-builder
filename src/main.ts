@@ -301,7 +301,7 @@ function printPage(): string {
 }
 
 function notFoundPage(): string {
-  return `${header()}<main id="main" class="not-found"><div class="broken-grid" aria-hidden="true"><i></i><i></i><i></i></div><p class="eyebrow">404 · tile missing</p><h1 tabindex="-1">This path ends at concrete</h1><p>The page is not in this tiny map.</p><a class="button button-primary" href="/" data-route>Return to the builder</a></main>${footer()}`;
+  return `${header()}<main id="main" class="not-found"><div class="broken-grid" aria-hidden="true"><i></i><i></i><i></i></div><p class="eyebrow">Error 404</p><h1 tabindex="-1">Page not found</h1><p>This page does not exist.</p><a class="button button-primary" href="/" data-route>Return to the builder</a></main>${footer()}`;
 }
 
 function routeView(): string {

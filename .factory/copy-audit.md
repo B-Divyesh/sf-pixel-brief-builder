@@ -62,6 +62,17 @@ The control labels use one concrete vocabulary: **Game shape**, **Four-colour pa
 | Built by Param Factory | 4 | Pass: attribution |
 | Original generated art. | 3 | Pass: provenance |
 
+## 404 page
+
+| Copy | Words | Result |
+| --- | ---: | --- |
+| Error 404 | 2 | Pass: status label |
+| Page not found | 3 | Pass: direct error heading |
+| This page does not exist. | 5 | Pass: direct explanation |
+| Return to the builder | 4 | Pass: recovery action |
+
+The missing-page route uses direct error language. It does not use a metaphor or a mood heading.
+
 ## Terminology table
 
 | Concept | One term used |
